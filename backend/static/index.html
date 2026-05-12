@@ -1,0 +1,178 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>后端 API 调试 · 遥感伪造定位</title>
+    <style>
+      :root {
+        font-family: system-ui, sans-serif;
+        color: #1a1a1a;
+        line-height: 1.5;
+      }
+      body {
+        max-width: 40rem;
+        margin: 2rem auto;
+        padding: 0 1rem;
+      }
+      h1 {
+        font-size: 1.25rem;
+        font-weight: 600;
+      }
+      section {
+        margin: 1.5rem 0;
+        padding: 1rem;
+        border: 1px solid #e0e0e0;
+        border-radius: 8px;
+        background: #fafafa;
+      }
+      label {
+        display: block;
+        margin-top: 0.5rem;
+        font-size: 0.875rem;
+      }
+      input {
+        width: 100%;
+        max-width: 24rem;
+        padding: 0.4rem 0.5rem;
+        box-sizing: border-box;
+      }
+      button {
+        margin-top: 0.75rem;
+        padding: 0.45rem 1rem;
+        cursor: pointer;
+      }
+      pre {
+        margin: 0.75rem 0 0;
+        padding: 0.75rem;
+        background: #111;
+        color: #e8e8e8;
+        border-radius: 6px;
+        overflow-x: auto;
+        font-size: 0.8rem;
+      }
+      .hint {
+        font-size: 0.85rem;
+        color: #555;
+      }
+      a {
+        color: #0b57d0;
+      }
+    </style>
+  </head>
+  <body>
+    <h1>后端接口快速测试（注册 / 登录 / FLDCF 请优先用前端「可视化」页）</h1>
+    <p class="hint">
+      也可用内置文档调试：
+      <a href="/docs" target="_blank" rel="noopener">Swagger UI（/docs）</a>
+      ·
+      <a href="/redoc" target="_blank" rel="noopener">ReDoc（/redoc）</a>
+    </p>
+
+    <section>
+      <strong>注册</strong> · POST <code>/auth/register</code> · JSON
+      <label>用户名</label>
+      <input id="regUser" type="text" placeholder="至少 2 位" autocomplete="username" />
+      <label>密码</label>
+      <input id="regPass" type="password" placeholder="4～20 位" autocomplete="new-password" />
+      <button type="button" id="btnReg">注册</button>
+      <pre id="outReg">（结果会显示在这里）</pre>
+    </section>
+
+    <section>
+      <strong>登录</strong> · POST <code>/auth/login</code> · form（OAuth2 密码流）
+      <label>用户名</label>
+      <input id="loginUser" type="text" autocomplete="username" />
+      <label>密码</label>
+      <input id="loginPass" type="password" autocomplete="current-password" />
+      <button type="button" id="btnLogin">登录并保存 Token</button>
+      <pre id="outLogin">（登录成功后会把 access_token 存到下方只读框）</pre>
+      <label>当前 Token（仅内存，刷新页面会丢）</label>
+      <input id="tokenBox" type="text" readonly placeholder="先登录" />
+    </section>
+
+    <section>
+      <strong>当前用户</strong> · GET <code>/auth/me</code> · Header: Authorization Bearer
+      <button type="button" id="btnMe">携带 Token 请求 /auth/me</button>
+      <pre id="outMe">（需要先登录）</pre>
+    </section>
+
+    <script>
+      const $ = (id) => document.getElementById(id);
+
+      async function showJson(preId, res) {
+        let body;
+        try {
+          body = await res.json();
+        } catch {
+          body = await res.text();
+        }
+        $(preId).textContent =
+          res.status +
+          " " +
+          res.statusText +
+          "\n\n" +
+          (typeof body === "string" ? body : JSON.stringify(body, null, 2));
+      }
+
+      $("btnReg").onclick = async () => {
+        const username = $("regUser").value.trim();
+        const password = $("regPass").value;
+        const res = await fetch("/auth/register", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ username, password }),
+        });
+        await showJson("outReg", res);
+      };
+
+      $("btnLogin").onclick = async () => {
+        const username = $("loginUser").value.trim();
+        const password = $("loginPass").value;
+        const form = new URLSearchParams();
+        form.set("username", username);
+        form.set("password", password);
+        const res = await fetch("/auth/login", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/x-www-form-urlencoded;charset=UTF-8",
+          },
+          body: form.toString(),
+        });
+        // 响应体只能读一次：先 json()，再同时展示与取 token（勿先 showJson 再 clone）
+        let payload;
+        try {
+          payload = await res.json();
+        } catch {
+          payload = await res.text();
+        }
+        $("outLogin").textContent =
+          res.status +
+          " " +
+          res.statusText +
+          "\n\n" +
+          (typeof payload === "string"
+            ? payload
+            : JSON.stringify(payload, null, 2));
+        const token =
+          payload &&
+          typeof payload === "object" &&
+          payload.data &&
+          payload.data.access_token;
+        if (token) $("tokenBox").value = token;
+      };
+
+      $("btnMe").onclick = async () => {
+        const token = $("tokenBox").value.trim();
+        if (!token) {
+          $("outMe").textContent = "请先登录获取 Token";
+          return;
+        }
+        const res = await fetch("/auth/me", {
+          headers: { Authorization: "Bearer " + token },
+        });
+        await showJson("outMe", res);
+      };
+    </script>
+  </body>
+</html>

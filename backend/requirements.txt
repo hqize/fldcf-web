@@ -1,0 +1,23 @@
+fastapi==0.104.1
+uvicorn[standard]==0.24.0
+tortoise-orm[aiomysql]==0.20.1
+pydantic==2.5.2
+python-multipart==0.0.6
+passlib[bcrypt]==1.7.4
+bcrypt==4.0.1
+python-jose[cryptography]==3.3.0
+python-dotenv==1.0.0
+openai>=1.58.0
+
+# FLDCF 推理：须使用带 CUDA 的 PyTorch（默认 PyPI 常为 +cpu）。
+# Windows + NVIDIA：在 venv 内执行（版本以 pytorch.org 为准）：
+#   pip install torch torchvision --index-url https://download.pytorch.org/whl/cu124
+# 勿单独 pip install torch（会得到 CPU 版）；安装后再 pip install -r requirements.txt 亦可。
+numpy>=1.24
+imageio>=2.31
+scikit-image>=0.21
+matplotlib>=3.7
+opencv-python-headless>=4.8
+# torchvision 与 torch 须同索引一次安装；当前开发机：torch 2.6.0+cu124 / torchvision 0.21.0+cu124
+torchvision>=0.21.0
+

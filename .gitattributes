@@ -1,0 +1,20 @@
+# 仓库内统一使用 LF，减少 Windows 上「LF will be replaced by CRLF」类提示；
+# 检出行为仍受全局 core.autocrlf 影响，团队可配合设置 core.autocrlf=false（仅本仓库见下方说明）。
+* text=auto eol=lf
+
+# 二进制（禁止换行符转换）
+*.png binary
+*.gif binary
+*.ico binary
+*.jpg binary
+*.jpeg binary
+*.webp binary
+*.pdf binary
+*.docx binary
+*.woff binary
+*.woff2 binary
+*.pt binary
+*.pth binary
+*.ckpt binary
+*.onnx binary
+*.safetensors binary

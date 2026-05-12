@@ -1,0 +1,12 @@
+# 可选叠加：把 NVIDIA GPU 挂进 backend 容器（无显卡或未装 nvidia-container-toolkit 时不要使用）
+# 用法见 docker-compose.yml 顶部注释；需与 docker-compose.yml 同时指定 -f
+
+services:
+  backend:
+    deploy:
+      resources:
+        reservations:
+          devices:
+            - driver: nvidia
+              count: 1
+              capabilities: [gpu]
