@@ -174,4 +174,4 @@ Token 存于浏览器 **`localStorage`** 的 `token` 字段；路由前置守卫
 
 ## 许可与引用
 
-若使用[FLDCF](https://github.com/littlebeen/Forgery-localization-for-remote-sensing) 代码与论文，请遵循原作者许可并在学术工作中正确引用。本 README 仅描述本仓库的集成与运行方式。
+若使用[FLDCF](https://github.com/littlebeen/Forgery-localization-for-remote-sensing) 代码与论文以及相关权重，请遵循原作者许可并在学术工作中正确引用。本 README 仅描述本仓库的集成与运行方式。
