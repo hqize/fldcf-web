@@ -1,4 +1,4 @@
-# acid — 遥感图像伪造定位可视化
+# 遥感图像伪造定位可视化
 
 本项目为前后端分离应用：**后端**基于 FastAPI，提供 JWT 登录与 **FLDCF（Forgery Localization for Remote Sensing）** 推理接口；**前端**基于 Vue 3 + Vite + Element Plus，流程为 **登录 → 工作台首页 → 伪造定位可视化页**。
 
@@ -174,4 +174,4 @@ Token 存于浏览器 **`localStorage`** 的 `token` 字段；路由前置守卫
 
 ## 许可与引用
 
-若使用 FLDCF 官方代码与论文，请遵循原作者许可并在学术工作中正确引用。本 README 仅描述本仓库的集成与运行方式。
+若使用[FLDCF](https://github.com/littlebeen/Forgery-localization-for-remote-sensing) 代码与论文，请遵循原作者许可并在学术工作中正确引用。本 README 仅描述本仓库的集成与运行方式。
