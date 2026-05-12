@@ -1,6 +1,6 @@
 # 遥感图像伪造定位可视化
 
-本项目为前后端分离应用：**后端**基于 FastAPI，提供 JWT 登录与 **FLDCF（Forgery Localization for Remote Sensing）** 推理接口；**前端**基于 Vue 3 + Vite + Element Plus，流程为 **登录 → 工作台首页 → 伪造定位可视化页**。
+本项目为前后端分离应用：**后端**基于 FastAPI，提供 JWT 登录与 **FLDCF（Forgery Localization for Remote Sensing）** 推理接口；**前端**基于 Vue 3 + Vite + Element Plus + Typescript，流程为 **登录 → 工作台首页 → 伪造定位可视化页**。
 
 ---
 
