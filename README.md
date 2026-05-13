@@ -1,10 +1,10 @@
 # 遥感图像伪造定位可视化
 
-本项目为前后端分离应用：**后端**基于 FastAPI，提供 JWT 登录与 **FLDCF（Forgery Localization for Remote Sensing）** 推理接口；**前端**基于 Vue 3 + Vite + Element Plus，流程为 **登录 → 工作台首页 → 伪造定位可视化页**。
+本项目为前后端分离应用：**后端**基于 FastAPI，提供 JWT 登录与 **[FLDCF]([FLDCF: A Collaborative Framework for Forgery Localization and Detection in Satellite Imagery | IEEE Journals & Magazine | IEEE Xplore](https://ieeexplore.ieee.org/document/10756746))** 推理接口；**前端**基于 Vue 3 + Vite + Element Plus，流程为 **登录 → 工作台首页 → 伪造定位可视化页**。
 
 ---
 
-## 仓库结构（概要）
+## 项目结构
 
 | 路径 | 说明 |
 |------|------|
@@ -27,7 +27,7 @@
 
 权重与先验体积较大，由维护者通过网盘分发；下载后放到 **`backend/fldcf_data/`**（保持 `model/` 等子目录结构）。
 
-- 链接：[百度网盘 `fldcf_data` 分享](https://pan.baidu.com/s/1JmfZFJmpbigv_ISEpT5qJg?pwd=i8ep)（提取码：**`i8ep`**，若链接失效以维护者更新为准）
+- 链接：[百度网盘 `fldcf_data` 分享](https://pan.baidu.com/s/1JmfZFJmpbigv_ISEpT5qJg?pwd=i8ep)（提取码：**`i8ep`**，若链接失效以更新为准）
 
 ---
 
@@ -145,13 +145,11 @@ Token 存于浏览器 **`localStorage`** 的 `token` 字段；路由前置守卫
 
 ## Docker 部署
 
-本项目提供两种常见上线方式，可按环境选择。预构建镜像发布在 Docker Hub 账号 **[dreamom](https://hub.docker.com/repositories/dreamom)** 下（当前示例 tag **`1.0.0`**，镜像名 **`dreamom/fldcf-backend`**、**`dreamom/fldcf-frontend`**；发新版时自行 bump tag 并同步修改 compose）。
+本项目提供两种常见上线方式，可按环境选择。预构建镜像发布在  **[Docker Hub ](https://hub.docker.com/repositories/dreamom)**下（镜像名 **`dreamom/fldcf-backend`**、**`dreamom/fldcf-frontend`**）。
 
-### 方式 A：服务器上 `git clone` + `docker compose build`（源码构建）
+### 方式 A： `git clone` + `docker compose build`（源码构建）
 
-适合：希望服务器与仓库 **完全一致**、或频繁改代码后在机器上直接构建。
-
-1. **准备**：仓库含 **`FLDCF_raw/src`**（打进后端镜像）；**`backend/fldcf_data`** 大权重需在服务器单独拷贝或通过卷挂载（见「Git 与忽略规则」，GitHub 不接受单文件 >100MB）。
+1. **准备**：仓库含 **`FLDCF_raw/src`**（以打包到后端镜像）；**`backend/fldcf_data`** 大权重需在服务器单独拷贝或通过卷挂载（见「Git 与忽略规则」，GitHub 不接受单文件 >100MB）。
 2. **环境**：复制 **`docker.env.example`** → **`docker.env`**，填写 **`JWT_SECRET_KEY`**、**`AUTH_INIT_PASSWORD`**（生产至少 10 位）、**`MYSQL_ROOT_PASSWORD`**、**`CORS_ALLOW_ORIGINS`** 等；可选 **`DEEPSEEK_*`**、**`APT_MIRROR=tsinghua`**（国内构建 apt 易 502 时）。
 3. **启动**（仓库根目录）：
 
@@ -166,22 +164,25 @@ Token 存于浏览器 **`localStorage`** 的 `token` 字段；路由前置守卫
 **CPU / GPU（方式 A 同样适用）**
 
 - **默认 CPU**：`docker.env` 中 `PYTORCH_VARIANT` 留空或 `cpu`，`FLDCF_CPU=1`。
+
 - **GPU**：主机安装 **[NVIDIA Container Toolkit](https://docs.nvidia.com/datacenter/cloud-native/container-toolkit/install-guide.html)**，在 `docker.env` 设 **`PYTORCH_VARIANT=cu124`**、**`FLDCF_CPU=0`**，并执行：  
-  `docker compose -f docker-compose.yml -f docker-compose.gpu.yml --env-file docker.env up -d --build`
+  
+  ```bash
+  docker compose -f docker-compose.yml -f docker-compose.gpu.yml --env-file docker.env up -d --build
+  ```
 
 ---
 
-### 方式 B：使用已推送的 Hub 镜像（服务器只 pull）
+### 方式 B：使用dockerhub镜像构建
 
 适合：不在服务器上耗 CPU 装 PyTorch；版本与 **镜像 tag** 一一对应、回滚方便。
 
-1. **镜像**：从 [dreamom 的 Repositories](https://hub.docker.com/repositories/dreamom) 拉取 **`dreamom/fldcf-backend:<tag>`**、**`dreamom/fldcf-frontend:<tag>`**（与本地 `docker push` 的 tag 一致）。
+1. **镜像**：从 [镜像仓库](https://hub.docker.com/repositories/dreamom) 拉取 **`dreamom/fldcf-backend:<tag>`**、**`dreamom/fldcf-frontend:<tag>`**（与本地 `docker push` 的 tag 一致）。
 2. **编排**：复制 **`docker-compose.registry.example.yml`** → **`docker-compose.registry.yml`**，确认其中 `image` 与 Hub 上 tag 一致（示例已为 **`1.0.0`**，可自行改）。
 3. **环境**：仍需 **`docker.env`**；**`backend/fldcf_data`** 在服务器单独准备并挂载（大 `.pt` 一般不随 Git 推 GitHub）。
 4. **启动**（仓库根目录）：
 
    ```bash
-   docker login   # 私有仓库时需要
    docker compose -f docker-compose.registry.yml --env-file docker.env pull
    docker compose -f docker-compose.registry.yml --env-file docker.env up -d
    ```
@@ -208,7 +209,7 @@ Token 存于浏览器 **`localStorage`** 的 `token` 字段；路由前置守卫
   设置环境变量 **`CORS_ALLOW_ORIGINS`**（逗号分隔完整 Origin），Docker + Nginx 同域时一般会包含 `http://localhost`。
 
 - **4K / 大图导致 502 或进程消失**  
-  推理默认将 **`FLDCF_MAX_INPUT_SIDE`**（默认 **2048**）作为最长边上限并自动缩小；仍 OOM 时返回 **503** 业务错误而非拖垮 worker。设为 **0** 可关闭缩放（不推荐）。响应中含 **`input_was_downscaled`**、**`input_original_*`**。
+  推理默认将 **`FLDCF_MAX_INPUT_SIDE`**（默认 **2048**）作为最长边上限并自动缩小；仍 OOM 时返回 **503** 业务错误而非拖垮 worker。设为 **0** 可关闭缩放。响应中含 **`input_was_downscaled`**、**`input_original_*`**。
 
 ---
 
