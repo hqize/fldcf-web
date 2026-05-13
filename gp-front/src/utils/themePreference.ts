@@ -1,5 +1,5 @@
 /** 与 Pinia `theme` store、顶部开关、系统设置共用 */
-const STORAGE_KEY = 'acid-ui-theme'
+const STORAGE_KEY = 'fldcf-ui-theme'
 
 export type StoredTheme = 'dark' | 'light'
 

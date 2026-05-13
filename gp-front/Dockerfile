@@ -1,4 +1,4 @@
-# 构建上下文应为 acid 仓库根目录：docker build -f gp-front/Dockerfile .
+# 构建上下文应为 fldcf 仓库根目录：docker build -f gp-front/Dockerfile .
 FROM node:22-alpine AS build
 WORKDIR /web
 

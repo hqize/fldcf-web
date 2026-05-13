@@ -19,7 +19,15 @@
 
 ### Git 与忽略规则
 
-`.gitignore` 未因目录迁移而必须修改：仍忽略各层 `.env`、Python 缓存与虚拟环境、以及 **`backend/fldcf_data/**/*.pt`** 等大权重文件。仓库根目录无额外 Git 钩子配置。
+`.gitignore` 忽略各层 `.env`、Python/Node 缓存与虚拟环境等。
+
+**大权重（`backend/fldcf_data` 下 `*.pt` 等）**：单文件 **超过 100MB 无法直接推送到 GitHub**（会报 `GH001` / `exceeds GitHub's file size limit`）。本仓库默认 **不把 `.pt` 等权重提交到 Git**；请从下方 **网盘** 下载后解压到 **`backend/fldcf_data/`**（与本地开发、Docker 卷挂载路径一致）。若必须用 GitHub 存权重，请安装 **[Git LFS](https://git-lfs.github.com/)** 并对 `*.pt` 执行 `git lfs track` 后再提交（仍受 LFS 配额限制）。`docs/` 为本地文档目录，默认忽略。
+
+### `fldcf_data` 获取（百度网盘）
+
+权重与先验体积较大，由维护者通过网盘分发；下载后放到 **`backend/fldcf_data/`**（保持 `model/` 等子目录结构）。
+
+- 链接：[百度网盘 `fldcf_data` 分享](https://pan.baidu.com/s/1JmfZFJmpbigv_ISEpT5qJg?pwd=i8ep)（提取码：**`i8ep`**，若链接失效以维护者更新为准）
 
 ---
 
@@ -38,7 +46,7 @@
 
 - **MySQL**：ORM 使用 Tortoise + aiomysql，数据库连接串见下文 `DB_URL`。
 
-- **FLDCF 官方源码**：推理**只依赖**官方工程里的 **`src/`** 树。在 **`acid/FLDCF_raw/`** 下放置 **`src`** 即可（即从 FLDCF(raw) 只复制 **`src` 文件夹**到 `FLDCF_raw/src`）；不必拷贝仓库根的 `data/`、`scripts/` 等。此时 **`backend/.env` 可不写 `FLDCF_ROOT`**。亦可用 **`FLDCF_ROOT`** 指向其它路径，详见 `backend/.env.example`。
+- **FLDCF 官方源码**：推理**只依赖**官方工程里的 **`src/`** 树。在本仓库根目录下的 **`FLDCF_raw/`** 中放置 **`src`** 即可（即从 FLDCF(raw) 只复制 **`src` 文件夹**到 `FLDCF_raw/src`）；不必拷贝仓库根的 `data/`、`scripts/` 等。此时 **`backend/.env` 可不写 `FLDCF_ROOT`**。亦可用 **`FLDCF_ROOT`** 指向其它路径，详见 `backend/.env.example`。
 
 ---
 
@@ -80,7 +88,8 @@
 
 ## FLDCF 权重与可选环境变量
 
-- 整网权重放在 **`backend/fldcf_data/`**，默认文件名如：`model_fakeV.pt`、`model_fakeL.pt`、`model_studentV.pt`、`model_studentL.pt`（可按需在 `.env` 中用 `FLDCF_CHECKPOINT_*` 覆盖路径，见 `backend/src/fldcf_api/inference.py` 顶部说明）。
+- **获取方式**：大文件不在 GitHub 仓库内，请从 [百度网盘分享](https://pan.baidu.com/s/1JmfZFJmpbigv_ISEpT5qJg?pwd=i8ep)（提取码 **`i8ep`**）下载后解压到 **`backend/fldcf_data/`**。
+- 整网权重默认文件名如：`model_fakeV.pt`、`model_fakeL.pt`、`model_studentV.pt`、`model_studentL.pt`（可按需在 `.env` 中用 `FLDCF_CHECKPOINT_*` 覆盖路径，见 `backend/src/fldcf_api/inference.py` 顶部说明）。
 - **`backend/fldcf_data/model/`** 下需有官方流程使用的先验命名，如 **`model_vi.pt`**；LoveDA 线另需 **`model_lo.pt`** 等（见推理代码与注释）。
 - 其他常用变量（可选）：`FLDCF_PRESET`、`FLDCF_CPU`、`FLDCF_MAX_UPLOAD_BYTES`、`FLDCF_MASK_OVERRIDE` 等，见 `backend/src/fldcf_api/inference.py`。
 
@@ -134,26 +143,57 @@ Token 存于浏览器 **`localStorage`** 的 `token` 字段；路由前置守卫
 
 ---
 
-## Docker 部署（概要）
+## Docker 部署
 
-仓库根目录提供 **`docker-compose.yml`**、`backend/Dockerfile`、`gp-front/Dockerfile`。容器内为 **`uvicorn src.main:app`**（`PYTHONPATH=/app/backend`）；本地在 `backend` 目录使用 **`uvicorn src.main:app --reload`** 或 **`python -m src.main`**。
+本项目提供两种常见上线方式，可按环境选择。预构建镜像发布在 Docker Hub 账号 **[dreamom](https://hub.docker.com/repositories/dreamom)** 下（当前示例 tag **`1.0.0`**，镜像名 **`dreamom/fldcf-backend`**、**`dreamom/fldcf-frontend`**；发新版时自行 bump tag 并同步修改 compose）。
 
-1. **准备**：保留 **`FLDCF_raw/src`**（已打进后端镜像）；将 **`backend/fldcf_data`** 下权重与 **`model/`** 先放好（与本地一致，通过卷挂载进容器）。
-2. **环境**：复制 **`docker.env.example`** 为 **`docker.env`**，填写 **`JWT_SECRET_KEY`**、**`AUTH_INIT_PASSWORD`**（至少 10 位）、**`MYSQL_ROOT_PASSWORD`** 等。
-3. **启动**：在仓库根目录执行  
-   `docker compose --env-file docker.env up --build`
-4. **访问**：浏览器打开 **`http://localhost`**（Nginx 托管前端，并把 **`/api`、`/fldcf-api`** 反代到后端）；API 文档 **`http://localhost:8000/docs`**。
+### 方式 A：服务器上 `git clone` + `docker compose build`（源码构建）
 
-**CPU / GPU 可选（Docker）**
+适合：希望服务器与仓库 **完全一致**、或频繁改代码后在机器上直接构建。
 
-- **默认 CPU 小镜像**：`docker.env` 保持 `PYTORCH_VARIANT` 不填或 `cpu`，`FLDCF_CPU=1`。
-- **用 GPU**：主机安装 **NVIDIA 驱动** 与 **[NVIDIA Container Toolkit](https://docs.nvidia.com/datacenter/cloud-native/container-toolkit/install-guide.html)**；在 `docker.env` 中设置 **`PYTORCH_VARIANT=cu124`** 与 **`FLDCF_CPU=0`**，然后叠加 **`docker-compose.gpu.yml`**：  
-  `docker compose -f docker-compose.yml -f docker-compose.gpu.yml --env-file docker.env up --build`  
-  推理仍可在请求里用表单参数 **`use_cpu`** 临时覆盖（与本地一致）；无 GPU 或未叠加上述文件时，CUDA 版 wheel 在容器内会 **自动退回 CPU**（`torch.cuda.is_available()` 为 false）。
+1. **准备**：仓库含 **`FLDCF_raw/src`**（打进后端镜像）；**`backend/fldcf_data`** 大权重需在服务器单独拷贝或通过卷挂载（见「Git 与忽略规则」，GitHub 不接受单文件 >100MB）。
+2. **环境**：复制 **`docker.env.example`** → **`docker.env`**，填写 **`JWT_SECRET_KEY`**、**`AUTH_INIT_PASSWORD`**（生产至少 10 位）、**`MYSQL_ROOT_PASSWORD`**、**`CORS_ALLOW_ORIGINS`** 等；可选 **`DEEPSEEK_*`**、**`APT_MIRROR=tsinghua`**（国内构建 apt 易 502 时）。
+3. **启动**（仓库根目录）：
+
+   ```bash
+   docker compose --env-file docker.env up -d --build
+   ```
+
+4. **访问**：前端 **`http://<主机>:80`**（或 `WEB_PORT`）；API 文档 **`http://<主机>:8000/docs`**。
+
+日常更新：`git pull` 后执行 **`docker compose --env-file docker.env up -d --build`**；仅改环境变量可用 **`--force-recreate backend`** 等，不必每次 `down`。
+
+**CPU / GPU（方式 A 同样适用）**
+
+- **默认 CPU**：`docker.env` 中 `PYTORCH_VARIANT` 留空或 `cpu`，`FLDCF_CPU=1`。
+- **GPU**：主机安装 **[NVIDIA Container Toolkit](https://docs.nvidia.com/datacenter/cloud-native/container-toolkit/install-guide.html)**，在 `docker.env` 设 **`PYTORCH_VARIANT=cu124`**、**`FLDCF_CPU=0`**，并执行：  
+  `docker compose -f docker-compose.yml -f docker-compose.gpu.yml --env-file docker.env up -d --build`
+
+---
+
+### 方式 B：使用已推送的 Hub 镜像（服务器只 pull）
+
+适合：不在服务器上耗 CPU 装 PyTorch；版本与 **镜像 tag** 一一对应、回滚方便。
+
+1. **镜像**：从 [dreamom 的 Repositories](https://hub.docker.com/repositories/dreamom) 拉取 **`dreamom/fldcf-backend:<tag>`**、**`dreamom/fldcf-frontend:<tag>`**（与本地 `docker push` 的 tag 一致）。
+2. **编排**：复制 **`docker-compose.registry.example.yml`** → **`docker-compose.registry.yml`**，确认其中 `image` 与 Hub 上 tag 一致（示例已为 **`1.0.0`**，可自行改）。
+3. **环境**：仍需 **`docker.env`**；**`backend/fldcf_data`** 在服务器单独准备并挂载（大 `.pt` 一般不随 Git 推 GitHub）。
+4. **启动**（仓库根目录）：
+
+   ```bash
+   docker login   # 私有仓库时需要
+   docker compose -f docker-compose.registry.yml --env-file docker.env pull
+   docker compose -f docker-compose.registry.yml --env-file docker.env up -d
+   ```
+
+**说明**：容器内后端命令仍为 **`uvicorn src.main:app`**（`PYTHONPATH=/app/backend`）；本地开发在 **`backend`** 目录可用 **`uvicorn src.main:app --reload`** 或 **`python -m src.main`**。
 
 ---
 
 ## 常见问题
+
+- **`remote: error: File ... exceeds GitHub's file size limit of 100.00 MB` / `GH001`**  
+  GitHub **禁止**推送单文件超过 **100MB** 的 blob（普通 Git，非 LFS）。本仓库 **`backend/fldcf_data/*.pt`** 等已写回 **`.gitignore`**，请从最近一次提交里撤掉这些文件后再 `push`（见下方命令）；部署时用 **scp / 卷挂载 / Git LFS** 之一解决。
 
 - **`ModuleNotFoundError: No module named 'utils.tools'`**  
   已在本项目 `fldcf_api` 的 `load()` 中通过暂存/恢复 `sys.modules` 的 `utils` 与 **本仓库 `backend/src/utils`** 解耦；若仍异常，请确认 **`FLDCF_ROOT`** 指向的目录下存在 **`src/utils/tools.py`**。

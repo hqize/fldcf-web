@@ -84,7 +84,7 @@ else:
 
 # ==================== 数据库 ====================
 
-_DEV_DB_URL = "mysql://root:123456@127.0.0.1:3306/nucleic_acid"
+_DEV_DB_URL = "mysql://root:123456@127.0.0.1:3306/fldcf"
 
 if IS_PRODUCTION:
     DB_URL = _env("DB_URL")

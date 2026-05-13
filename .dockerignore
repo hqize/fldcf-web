@@ -1,7 +1,8 @@
 # =============================================================================
-# acid — Docker 构建上下文忽略（仓库根为 context，backend / gp-front 共用）
+# fldcf — Docker 构建上下文忽略（仓库根为 context，backend / gp-front 共用）
 # - Docker 不会读取 .gitignore，此处需单独维护。
 # - 勿排除整个 backend/ 或 gp-front/，否则另一服务的 Dockerfile 中 COPY 会失败。
+# - 大权重与 Git 一致：不进构建 tar，运行时由 compose 挂载 backend/fldcf_data。
 # =============================================================================
 
 # -----------------------------------------------------------------------------
@@ -66,15 +67,13 @@ docs/
 !README.md
 
 # -----------------------------------------------------------------------------
-# 大权重（compose 运行时挂载 fldcf_data；减小 context 体积）
+# FLDCF 权重（减小 context；运行时装载见 compose volumes）
 # -----------------------------------------------------------------------------
 backend/fldcf_data/**/*.pt
 backend/fldcf_data/**/*.pth
 backend/fldcf_data/**/*.ckpt
 backend/fldcf_data/**/*.onnx
 backend/fldcf_data/**/*.safetensors
-
-# 本地实验输出
 backend/fldcf_data/experiment/
 
 # -----------------------------------------------------------------------------

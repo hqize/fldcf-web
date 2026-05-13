@@ -219,7 +219,7 @@ function goSection(id: string) {
       <section :id="'doc-env'" class="doc-section">
         <h3 class="doc-h">环境与部署提示</h3>
         <ul class="doc-ul">
-          <li>后端：<code>backend/.env</code>（数据库、JWT、可选 FLDCF 根目录等）；DeepSeek 亦可写在 <code>backend/aichat_api/.env</code>，启动时会合并加载。</li>
+          <li>后端：<code>backend/.env</code>（数据库、JWT、可选 FLDCF 根目录等）；DeepSeek 亦可写在 <code>backend/src/aichat_api/.env</code>，启动时会合并加载。</li>
           <li>FLDCF 推理依赖 GPU/权重路径，请看后端日志与 <code>/fldcf/status</code> 中的 <code>inference_ready</code>。</li>
           <li>生产环境务必更换 JWT 密钥、数据库口令，且勿将 API Key 提交到版本库。</li>
         </ul>

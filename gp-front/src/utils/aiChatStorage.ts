@@ -7,7 +7,7 @@ export interface AiChatTurn {
   content: string
 }
 
-const PREFIX = 'acid-ai-chat-v1:'
+const PREFIX = 'fldcf-ai-chat-v1:'
 /** 防止撑爆存储：最多保留轮次（user+assistant 各算一条） */
 const MAX_TURNS = 120
 

@@ -4,7 +4,7 @@ save: api_infer
 load: 
 reset: False
 model: fldcf
-pre_train: D:\Dev\acid\backend\fldcf_data\model_fakeV.pt
+pre_train: ./backend/fldcf_data\model_fakeV.pt
 resume: 0
 cpu: True
 precision: single
@@ -23,7 +23,7 @@ save: api_infer
 load: 
 reset: False
 model: fldcf
-pre_train: D:\Dev\acid\backend\fldcf_data\model_fakeL.pt
+pre_train: ./backend/fldcf_data\model_fakeL.pt
 resume: 0
 cpu: True
 precision: single
@@ -42,7 +42,7 @@ save: api_infer
 load: 
 reset: False
 model: fldcf
-pre_train: D:\Dev\acid\backend\fldcf_data\model_studentL.pt
+pre_train: ./backend/fldcf_data\model_studentL.pt
 resume: 0
 cpu: True
 precision: single
@@ -61,7 +61,7 @@ save: api_infer
 load: 
 reset: False
 model: fldcf
-pre_train: D:\Dev\acid\backend\fldcf_data\model_fakeV.pt
+pre_train: ./backend/fldcf_data\model_fakeV.pt
 resume: 0
 cpu: True
 precision: single
@@ -80,7 +80,7 @@ save: api_infer
 load: 
 reset: False
 model: fldcf
-pre_train: D:\Dev\acid\backend\fldcf_data\model_fakeV.pt
+pre_train: ./backend/fldcf_data\model_fakeV.pt
 resume: 0
 cpu: True
 precision: single
@@ -99,7 +99,7 @@ save: api_infer
 load: 
 reset: False
 model: fldcf
-pre_train: D:\Dev\acid\backend\fldcf_data\model_fakeV.pt
+pre_train: ./backend/fldcf_data\model_fakeV.pt
 resume: 0
 cpu: True
 precision: single
@@ -118,7 +118,7 @@ save: api_infer
 load: 
 reset: False
 model: fldcf
-pre_train: D:\Dev\acid\backend\fldcf_data\model_studentV.pt
+pre_train: ./backend/fldcf_data\model_studentV.pt
 resume: 0
 cpu: True
 precision: single
@@ -137,7 +137,7 @@ save: api_infer
 load: 
 reset: False
 model: fldcf
-pre_train: D:\Dev\acid\backend\fldcf_data\model_studentL.pt
+pre_train: ./backend/fldcf_data\model_studentL.pt
 resume: 0
 cpu: True
 precision: single
@@ -156,7 +156,7 @@ save: api_infer
 load: 
 reset: False
 model: fldcf
-pre_train: D:\Dev\acid\backend\fldcf_data\model_fakeL.pt
+pre_train: ./backend/fldcf_data\model_fakeL.pt
 resume: 0
 cpu: True
 precision: single
@@ -175,7 +175,7 @@ save: api_infer
 load: 
 reset: False
 model: fldcf
-pre_train: D:\Dev\acid\backend\fldcf_data\model_fakeL.pt
+pre_train: ./backend/fldcf_data\model_fakeL.pt
 resume: 0
 cpu: True
 precision: single
@@ -194,7 +194,7 @@ save: api_infer
 load: 
 reset: False
 model: fldcf
-pre_train: D:\Dev\acid\backend\fldcf_data\model_fakeL.pt
+pre_train: ./backend/fldcf_data\model_fakeL.pt
 resume: 0
 cpu: True
 precision: single
@@ -213,7 +213,7 @@ save: api_infer
 load: 
 reset: False
 model: fldcf
-pre_train: D:\Dev\acid\backend\fldcf_data\model_studentL.pt
+pre_train: ./backend/fldcf_data\model_studentL.pt
 resume: 0
 cpu: True
 precision: single
@@ -232,7 +232,7 @@ save: api_infer
 load: 
 reset: False
 model: fldcf
-pre_train: D:\Dev\acid\backend\fldcf_data\model_fakeV.pt
+pre_train: ./backend/fldcf_data\model_fakeV.pt
 resume: 0
 cpu: False
 precision: single
@@ -251,7 +251,7 @@ save: api_infer
 load: 
 reset: False
 model: fldcf
-pre_train: D:\Dev\acid\backend\fldcf_data\model_fakeV.pt
+pre_train: ./backend/fldcf_data\model_fakeV.pt
 resume: 0
 cpu: True
 precision: single
@@ -270,7 +270,7 @@ save: api_infer
 load: 
 reset: False
 model: fldcf
-pre_train: D:\Dev\acid\backend\fldcf_data\model_fakeL.pt
+pre_train: ./backend/fldcf_data\model_fakeL.pt
 resume: 0
 cpu: True
 precision: single
@@ -289,7 +289,7 @@ save: api_infer
 load: 
 reset: False
 model: fldcf
-pre_train: D:\Dev\acid\backend\fldcf_data\model_fakeL.pt
+pre_train: ./backend/fldcf_data\model_fakeL.pt
 resume: 0
 cpu: False
 precision: single
@@ -308,7 +308,7 @@ save: api_infer
 load: 
 reset: False
 model: fldcf
-pre_train: D:\Dev\acid\backend\fldcf_data\model_studentL.pt
+pre_train: ./backend/fldcf_data\model_studentL.pt
 resume: 0
 cpu: True
 precision: single
@@ -327,7 +327,7 @@ save: api_infer
 load: 
 reset: False
 model: fldcf
-pre_train: D:\Dev\acid\backend\fldcf_data\model_studentL.pt
+pre_train: ./backend/fldcf_data\model_studentL.pt
 resume: 0
 cpu: False
 precision: single
@@ -346,7 +346,7 @@ save: api_infer
 load: 
 reset: False
 model: fldcf
-pre_train: D:\Dev\acid\backend\fldcf_data\model_fakeV.pt
+pre_train: ./backend/fldcf_data\model_fakeV.pt
 resume: 0
 cpu: False
 precision: single
@@ -365,7 +365,7 @@ save: api_infer
 load: 
 reset: False
 model: fldcf
-pre_train: D:\Dev\acid\backend\fldcf_data\model_fakeL.pt
+pre_train: ./backend/fldcf_data\model_fakeL.pt
 resume: 0
 cpu: False
 precision: single
@@ -384,7 +384,7 @@ save: api_infer
 load: 
 reset: False
 model: fldcf
-pre_train: D:\Dev\acid\backend\fldcf_data\model_fakeV.pt
+pre_train: ./backend/fldcf_data\model_fakeV.pt
 resume: 0
 cpu: False
 precision: single
@@ -403,9 +403,28 @@ save: api_infer
 load: 
 reset: False
 model: fldcf
-pre_train: D:\Dev\acid\backend\fldcf_data\model_fakeV.pt
+pre_train: ./backend/fldcf_data\model_fakeV.pt
 resume: 0
 cpu: True
+precision: single
+self_ensemble: False
+chop: False
+n_GPUs: 1
+save_models: True
+data_train: Vaihingen
+data_train_dir: fakeV
+scale: 4
+save_results: False
+
+2026-05-12-16:54:56
+
+save: api_infer
+load: 
+reset: False
+model: fldcf
+pre_train: ./backend/fldcf_data\model_fakeV.pt
+resume: 0
+cpu: False
 precision: single
 self_ensemble: False
 chop: False

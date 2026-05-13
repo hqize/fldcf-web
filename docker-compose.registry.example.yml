@@ -1,14 +1,12 @@
-# fldcf：MySQL + 后端 + Nginx 前端
-# 用法（在仓库根目录执行，与 backend、gp-front、FLDCF_raw 同级）：
-#   1. 准备权重：将 .pt 与 model/ 先放到 backend/fldcf_data/（与本地开发一致）
-#   2. 复制环境：copy docker.env.example docker.env，填写 JWT_SECRET_KEY、AUTH_INIT_PASSWORD 等
-#   3. docker compose --env-file docker.env up --build
+# 方式 B：服务器只 docker pull 预构建镜像（不在服务器上 docker build）
 #
-# 浏览器访问 http://localhost （前端） 后端直连 http://localhost:8000/docs
+# 使用步骤概要：
+# 1. 在 Windows 本机构建并 push 镜像（须加 --platform linux/amd64 以匹配常见云服务器）
+# 2. 复制本文件为 docker-compose.registry.yml，按需修改下面两个 image（示例为 Docker Hub dreamom/*）
+# 3. 服务器：仍需仓库里的 docker.env；fldcf_data 可随仓库或继续挂载；在仓库根执行：
+#    docker compose -f docker-compose.registry.yml --env-file docker.env up -d
 #
-# GPU（可选）：主机安装 NVIDIA 驱动 + Container Toolkit 后，在 docker.env 设
-#   PYTORCH_VARIANT=cu124 与 FLDCF_CPU=0，再执行：
-#   docker compose -f docker-compose.yml -f docker-compose.gpu.yml --env-file docker.env up --build
+# 与 docker-compose.yml 的差异：backend / web 无 build，仅 image；mysql 与卷相同。
 
 services:
   mysql:
@@ -28,12 +26,7 @@ services:
       retries: 30
 
   backend:
-    build:
-      context: .
-      dockerfile: backend/Dockerfile
-      args:
-        PYTORCH_VARIANT: ${PYTORCH_VARIANT:-cpu}
-        APT_MIRROR: ${APT_MIRROR:-official}
+    image: dreamom/fldcf-backend:1.0.0
     ports:
       - "${BACKEND_PORT:-8000}:8000"
     environment:
@@ -50,16 +43,13 @@ services:
       DEEPSEEK_BASE_URL: ${DEEPSEEK_BASE_URL:-}
       DEEPSEEK_MODEL: ${DEEPSEEK_MODEL:-deepseek-chat}
     volumes:
-      # 权重较大，挂载宿主目录便于替换；构建镜像内不含 .pt
       - ./backend/fldcf_data:/app/backend/fldcf_data
     depends_on:
       mysql:
         condition: service_healthy
 
   web:
-    build:
-      context: .
-      dockerfile: gp-front/Dockerfile
+    image: dreamom/fldcf-frontend:1.0.0
     ports:
       - "${WEB_PORT:-80}:80"
     depends_on:

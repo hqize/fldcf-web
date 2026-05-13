@@ -7,7 +7,8 @@ import os
 from dataclasses import dataclass
 from pathlib import Path
 
-BACKEND_ROOT = Path(__file__).resolve().parent.parent
+# backend/src/fldcf_api/config.py → 上溯三级为 backend/（权重 fldcf_data 与可选 FLDCF_raw 放于此树下）
+BACKEND_ROOT = Path(__file__).resolve().parent.parent.parent
 FLDCF_DATA_DIR = BACKEND_ROOT / "fldcf_data"
 
 _PRESET_L_ALIASES = frozenset(
