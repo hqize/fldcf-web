@@ -1,4 +1,4 @@
-"""检测记录表：仅存摘要指标，不含 mask 大图/base64。"""
+"""检测记录表"""
 
 from tortoise import fields
 from tortoise.models import Model

@@ -1,5 +1,5 @@
 """
-AI 对话请求 / 响应模型（与前端契约一致）。
+AI 对话请求 / 响应模型（与前端契约一致）
 """
 
 from __future__ import annotations

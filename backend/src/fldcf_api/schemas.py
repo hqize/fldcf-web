@@ -1,4 +1,4 @@
-"""Pydantic：最小预测响应形状（与前端约定字段）。"""
+"""Pydantic：最小预测响应形状（与前端约定字段）"""
 
 from typing import Optional
 

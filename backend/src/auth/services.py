@@ -43,7 +43,7 @@ def avatar_upload_dir() -> Path:
 
 
 def unlink_managed_avatar_file(url: str | None) -> None:
-    """删除本地上传的旧头像（路径形如 /static/uploads/avatars/xxx）。"""
+    """删除本地上传的旧头像（路径形如 /static/uploads/avatars/xxx）"""
     if not url:
         return
     u = url.strip()
@@ -70,14 +70,14 @@ async def replace_user_avatar_from_upload(user: User, data: bytes, content_type:
     raw_ct = (content_type or "").split(";")[0].strip().lower()
     if raw_ct not in _AVATAR_CT_EXT:
         raise BizError(
-            "仅支持 JPG、PNG、GIF、WebP 图片",
+            "仅支持JPG、PNG、GIF、WebP图片",
             code="400",
             status_code=400,
         )
     if len(data) == 0:
         raise BizError("文件为空", code="400", status_code=400)
     if len(data) > MAX_AVATAR_BYTES:
-        raise BizError("头像图片不超过 2MB", code="413", status_code=413)
+        raise BizError("头像图片不超过2MB", code="413", status_code=413)
 
     unlink_managed_avatar_file(user.avatar_url)
     ext = _AVATAR_CT_EXT[raw_ct]
@@ -171,7 +171,7 @@ async def get_current_user(token: str = Depends(AUTH_SCHEMA)) -> User:
 async def get_current_admin_user(
     current_user: User = Depends(get_current_user),
 ) -> User:
-    """获取当前管理员用户，非管理员抛 403"""
+    """获取当前管理员用户，非管理员抛403"""
     if current_user.role != "admin":
         raise BizError.forbidden()
     return current_user

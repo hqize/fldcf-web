@@ -17,10 +17,10 @@ from tortoise import Tortoise
 from src.utils.logging_manager import get_uvicorn_log_config, setup_logging
 
 # -----------------------------------------------------------------------------
-# 进程初始化（须在 import src.core.settings 之前）
-#   1. 加载 backend/.env（及可选 src/aichat_api/.env），写入 os.environ
-#   2. 先用环境变量里的 LOG_LEVEL 配日志，保证随后加载 settings 时 JWT 等日志格式一致
-#   3. 再 import settings，并用 settings.LOG_LEVEL 同步一次（与 .env 规范化结果一致）
+# 进程初始化（须在import src.core.settings之前）
+#   1. 加载backend/.env（及可选 src/aichat_api/.env），写入os.environ
+#   2. 先用环境变量里的 LOG_LEVEL 配日志，保证随后加载 settings时JWT等日志格式一致
+#   3. 再import settings，并用settings.LOG_LEVEL同步一次（与 .env 规范化结果一致）
 # -----------------------------------------------------------------------------
 
 _BACKEND_ROOT = Path(__file__).resolve().parent.parent
@@ -47,7 +47,7 @@ from src.utils.exceptions import register_exception_handlers
 # ==================== 生命周期 ====================
 @asynccontextmanager
 async def lifespan(app: FastAPI):
-    """启动：数据库 / 建表 / 初始管理员；关闭：断开 Tortoise。"""
+    """启动：数据库 / 建表 / 初始管理员；关闭：断开 Tortoise"""
     await Tortoise.init(config=TORTOISE_ORM)
     await Tortoise.generate_schemas(safe=True)
     await init_admin_user()
@@ -65,7 +65,7 @@ register_exception_handlers(app)
 
 
 # ==================== CORS ====================
-# Docker / Nginx 同域前端：设置 CORS_ALLOW_ORIGINS="http://localhost,http://127.0.0.1" 等（逗号分隔）
+# Docker/Nginx同域前端：设置CORS_ALLOW_ORIGINS="http://localhost,http://127.0.0.1" 等
 _cors_env = os.getenv(
     "CORS_ALLOW_ORIGINS",
     "http://localhost:8000,http://localhost:5173,http://localhost,http://127.0.0.1",
@@ -102,7 +102,7 @@ async def toweb():
     return RedirectResponse("/static/index.html")
 
 
-# ==================== 脚本入口（开发：热重载 + 统一 log_config）====================
+# ==================== 脚本入口 ====================
 if __name__ == "__main__":
     import uvicorn
 

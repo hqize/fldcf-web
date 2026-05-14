@@ -1,44 +1,5 @@
 """
-FLDCF HTTP 推理：``FldcfPredictor``。
-
----------------------------------------------------------------------------
-一、输入（本模块关心的）
----------------------------------------------------------------------------
-
-1. **首次加载**：由 ``InferConfig``（见 ``config.py``）提供
-   - ``code_root``：FLDCF 官方仓库根（含 ``src/``）
-   - ``weights_dir``：一般为 ``backend/fldcf_data``（内含 ``model/*.pt``）
-   - ``checkpoint_path``：主网络权重，如 ``model_fakeL.pt``
-   - ``preset``：决定 LoveDA / Vaihingen 先验分支
-
-2. **单次预测**：``predict_image_bytes(file_bytes)``
-   - ``file_bytes``：上传图像的 **原始字节**（PNG/JPEG 等 ``imageio`` 可读格式）
-
----------------------------------------------------------------------------
-二、输出（``predict_image_bytes`` 返回的 dict）
----------------------------------------------------------------------------
-
-| 键 | 含义 | 如何得到 |
-|----|------|----------|
-| ``image_class_index`` | 0=伪造, 1=真实（经业务 override 后） | ``argmax(cls_logits)``，可被 mask 规则改写 |
-| ``fake_probability`` / ``authentic_probability`` | 图级两类 softmax 概率 | ``F.softmax(cls_logits)``；override 时可能交换 |
-| ``mask_png_base64`` | 可视化 mask 的 PNG（base64） | 对分割 argmax 通道取反 → uint8 → ``imageio`` 写内存 |
-| ``mask_height`` / ``mask_width`` | mask 尺寸 | 与送入网络的 **缩放后** 张量高宽一致 |
-| ``input_*`` | 实际推理分辨率、是否相对原图缩小 | ``FLDCF_MAX_INPUT_SIDE`` 与 ``cv2.resize`` |
-| ``mask_tamper_ratio`` / ``localization_override`` | 篡改类像素占比、是否触发「定位优先」 | 环境变量 ``FLDCF_MASK_*`` + 分割图统计 |
-| ``detail`` | 调试摘要字符串 | 拼接设备、preset、比例等 |
-
-**模型前向**：官方 ``Model(lr)`` → ``(seg_logits, cls_logits)``，与训练时同一路 ``forward``（未开 chop/x8）。
-
----------------------------------------------------------------------------
-三、为何还有「不像推理」的代码
----------------------------------------------------------------------------
-
-与 **数学上的前向** 无关、但为 **工程共存** 必需的部分已抽到 ``fldcf_runtime.py``：
-
-- ``utils`` 包名冲突、``cwd``、``sys.path``、LoveDA 下 ``model_vi.pt`` 临时适配、``torch.load`` CPU 映射、并行 load 锁。
-
-本文件只保留：**解码图像 → 张量 → 调模型 → 后处理 → 拼 API 字典**。
+FLDCF HTTP 推理：``FldcfPredictor``
 """
 
 from __future__ import annotations
@@ -103,8 +64,7 @@ def _postprocess_fl_outputs(
     device: torch.device,
 ) -> dict[str, object]:
     """
-    官方输出张量 → API 字段。
-
+    输出张量 → API 字段
     ``seg_logits``: [1, C, H, W]；``cls_logits``: [1, 2] 图级 logits。
     """
     sm = F.softmax(cls_logits, dim=1)
@@ -171,7 +131,7 @@ def _postprocess_fl_outputs(
 
 
 class FldcfPredictor:
-    """见模块文档「输入 / 输出」。"""
+    """见模块文档「输入 / 输出」"""
 
     def __init__(self, cfg: InferConfig):
         self.cfg = cfg
@@ -198,7 +158,7 @@ class FldcfPredictor:
 
             code_root = self.cfg.code_root.resolve()
             if not code_root.is_dir():
-                raise FileNotFoundError(f"FLDCF_ROOT（源码目录）不存在: {code_root}")
+                raise FileNotFoundError(f"FLDCF_ROOT(源码目录)不存在: {code_root}")
 
             wdir = self.cfg.weights_dir.resolve()
             ckpt = self.cfg.checkpoint_path.resolve()
@@ -210,12 +170,12 @@ class FldcfPredictor:
                     "studentL": "model_studentL.pt",
                 }.get(self.cfg.preset, "model_fakeV.pt")
                 raise FileNotFoundError(
-                    f"缺少 FLDCF 权重 {ckpt}，请将 {hint} 放到 {wdir}，或设置对应 FLDCF_CHECKPOINT_* 环境变量"
+                    f"缺少 FLDCF 权重 {ckpt}，请将 {hint} 放到 {wdir}，或设置对应FLDCF_CHECKPOINT_*环境变量"
                 )
 
             src = code_root / "src"
             if not src.is_dir():
-                raise FileNotFoundError(f"未找到 FLDCF 源码目录: {src}")
+                raise FileNotFoundError(f"未找到FLDCF源码目录: {src}")
 
             vi_path: object | None = None
             saved_vi: bytes | None = None
@@ -228,7 +188,7 @@ class FldcfPredictor:
 
             try:
                 with fldcf_isolated_import_session(wdir, src, runs_cpu=self._runs_cpu):
-                    from data.common import np2Tensor  # noqa: WPS433
+                    from data.common import np2Tensor
 
                     self._np2Tensor = np2Tensor
                     if _is_love_branch(self.cfg.preset):
@@ -281,8 +241,8 @@ class FldcfPredictor:
                 except Exception:
                     pass
             raise BizError(
-                "显存或内存不足，已中止本次推理。已自动缩小仍失败时可再调低环境变量 "
-                "FLDCF_MAX_INPUT_SIDE（默认 2048；设为 0 关闭缩放但不建议）。",
+                "显存或内存不足，已中止本次推理,已自动缩小仍失败时可再调低环境变量 "
+                "FLDCF_MAX_INPUT_SIDE（默认2048；设为0关闭缩放但不建议）",
                 code="503",
                 status_code=503,
             ) from e

@@ -1,11 +1,6 @@
 """
-统一异常：BizError + 全局注册到 FastAPI。
+统一异常：BizError + 全局注册到 FastAPI
 
-FastAPI / Starlette 在路由解析、安全依赖里仍可能抛出 HTTPException，
-下面的 register_exception_handlers 会把它转成同样的 Result 信封。
-
-各业务模块特有的「异常 → BizError」映射宜放在该模块内（例如 fldcf_api/exceptions.py），
-避免本文件堆积不同领域的分支，保持 utils 轻量、可维护。
 """
 from typing import Any
 
@@ -21,7 +16,7 @@ logger = get_logger(__name__)
 
 
 class BizError(Exception):
-    """业务与鉴权错误：由全局处理器转为 Result。"""
+    """业务与鉴权错误：由全局处理器转为Result"""
 
     def __init__(
         self,
@@ -39,7 +34,7 @@ class BizError(Exception):
 
     @classmethod
     def unauthorized(cls, msg: str = "无效的认证凭据") -> "BizError":
-        """401 + Bearer（OAuth2 密码流 / JWT 依赖约定）"""
+        """401 + Bearer（OAuth2密码流/JWT依赖约定）"""
         return cls(
             msg,
             code="401",

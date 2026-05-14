@@ -33,16 +33,16 @@ router = APIRouter()
     "/status",
     response_model=Result[FldcfStatusResponse],
     summary="推理服务状态",
-    description="查看 FLDCF 是否已加载、运行设备、当前权重路径；可选 preset 会触发对应预测器加载（预热）",
+    description="查看FLDCF是否已加载、运行设备、当前权重路径；可选preset会触发对应预测器加载",
 )
 def get_status(
         preset: str | None = Query(
             None,
-            description="fakeV|fakeL|studentV|studentL；用于查看该线下的 checkpoint 并预热",
+            description="fakeV|fakeL|studentV|studentL；用于查看该线下的checkpoint并预热",
         ),
         use_cpu: bool | None = Query(
             None,
-            description="true=强制 CPU；false=优先 GPU；省略则沿用服务端 FLDCF_CPU",
+            description="true=强制CPU；false=优先GPU；省略则沿用服务端FLDCF_CPU",
         ),
 ):
     _code_root = get_code_root()
@@ -54,7 +54,7 @@ def get_status(
     cuda_ok = torch_cuda_available()
     preset_resolved = resolve_preset(preset)
     ckpt_path = default_checkpoint(_weights_dir, preset_resolved)
-    # 预热失败不抛 BizError：仍 200，由 inference_ready=false 表示（便于前端轮询状态）
+    # 预热失败不抛BizError：仍200，由inference_ready=false表示(便于前端轮询状态)
     try:
         p = get_predictor(preset, use_cpu)
         p.load()

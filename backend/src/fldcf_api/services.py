@@ -1,5 +1,5 @@
 """
-FLDCF 业务层：预测器缓存、路径解析、与 PyTorch 推理调度。
+FLDCF 业务层：预测器缓存、路径解析、与 PyTorch 推理调度
 """
 
 from __future__ import annotations

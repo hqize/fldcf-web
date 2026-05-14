@@ -1,16 +1,6 @@
 """
-统一日志：warnings → logging，basicConfig(force=True) 覆盖旧配置，uvicorn 子 logger 使用同一套格式。
+统一日志：warnings → logging，basicConfig(force=True)覆盖旧配置，uvicorn子logger使用同一套格式
 
-业务模块::
-
-    from utils.logging_manager import get_logger
-    logger = get_logger(__name__)
-
-环境变量 ``LOG_LEVEL``：DEBUG / INFO / WARNING / ERROR / CRITICAL（默认 INFO）。
-
-命令行在 ``backend`` 目录可使用::
-
-    uvicorn src.main:app --log-config logging_uvicorn.json
 """
 from __future__ import annotations
 
@@ -59,7 +49,7 @@ def build_uvicorn_log_config(
     fmt: str = DEFAULT_FORMAT,
     datefmt: str = DEFAULT_DATEFMT,
 ) -> dict[str, Any]:
-    """供 uvicorn.run(log_config=...) 与 setup_logging 内 dictConfig 共用。"""
+    """供uvicorn.run(log_config=...)与 setup_logging内dictConfig共用"""
     env_level = os.getenv("LOG_LEVEL", "INFO")
     resolved = parse_log_level(level if level is not None else env_level)
     level_name = _level_to_dict_name(resolved)
@@ -136,7 +126,7 @@ def get_uvicorn_log_config(
     fmt: str = DEFAULT_FORMAT,
     datefmt: str = DEFAULT_DATEFMT,
 ) -> dict[str, Any]:
-    """与 setup_logging 内 uvicorn 块一致，供 uvicorn.run 再次套用（启动时会 dictConfig）。"""
+    """与setup_logging内uvicorn块一致，供uvicorn.run再次套用（启动时会 dictConfig）"""
     return build_uvicorn_log_config(level, fmt=fmt, datefmt=datefmt)
 
 

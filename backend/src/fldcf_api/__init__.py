@@ -1,11 +1,12 @@
 """
-FLDCF 模块（与 auth 包同级结构）：
+FLDCF 模块：
 
 - router   HTTP 路由
 - services 预测器缓存与推理调度
 - config     preset / 路径 / InferConfig
 - inference  PyTorch 模型加载与逐图预测
 - schemas  Pydantic 响应
+- fldcf_runtime 分离运行加载业务
 """
 
 from .router import router
