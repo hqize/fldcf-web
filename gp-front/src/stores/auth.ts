@@ -1,8 +1,8 @@
 /**
- * 认证状态（Pinia）：token + 用户信息，与 localStorage 同步，供路由守卫与各页共享。
+ * 认证状态（Pinia）：token + 用户信息，与 localStorage 同步，供路由守卫与各页共享
  *
  * axios（@/utils/request、@/api/fldcf）仍从 localStorage 读 token；
- * 登录/退出请通过本 store 写入，以保证内存与本地一致。
+ * 登录/退出请通过本 store 写入，以保证内存与本地一致
  */
 import { ref, computed } from 'vue'
 import { defineStore } from 'pinia'

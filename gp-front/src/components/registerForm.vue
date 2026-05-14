@@ -32,7 +32,7 @@ import type { FormInstance, FormRules } from 'element-plus';
 
 import { ElMessage } from 'element-plus';
 
-// 1. 定义 Props
+// 1.定义Props
 interface UserForm {
     username: string;
     password: string;
@@ -44,17 +44,17 @@ const props = defineProps<{
     registerRules: FormRules;
 }>();
 
-// 2. 定义 emits (向父组件发送事件)
+// 2.定义emits(向父组件发送事件)
 const emit = defineEmits<{
     (e: 'register-success', payload: { username: string; password: string }): void;
 }>();
 
-// 3. 获取表单实例
+// 3.获取表单实例
 const registerForm = ref<FormInstance | null>(null);
 
 
 
-// 4. 处理注册逻辑
+// 4.处理注册逻辑
 import { userApi } from '@/api/user';
 const handleRegister = async () => {
     if (!registerForm.value) return;
@@ -74,7 +74,7 @@ const handleRegister = async () => {
         });
         
         // 可选：注册成功后自动切换回登录模式
-        // 这通常需要父组件控制，或者通过 emit 让父组件切换 signUpMode
+        // 这通常需要父组件控制，或者通过emit让父组件切换signUpMode
         
     } catch (error: unknown) {
         const msg =

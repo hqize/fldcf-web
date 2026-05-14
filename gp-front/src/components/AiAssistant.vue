@@ -12,20 +12,20 @@ import {
 import { renderAiMarkdown } from '@/utils/renderAiMarkdown'
 
 const SYSTEM_PROMPT =
-  '你是卫星遥感图像伪造检测系统的智能助手。请用简明中文回答，涉及模型输出时可解释伪造/真实概率与篡改 mask 的含义；不确定时请说明局限。'
+  '你是卫星遥感图像伪造检测系统的智能助手，请用简明中文回答，涉及模型输出时可解释伪造/真实概率与篡改mask的含义；不确定时请说明局限。'
 
-/** 一键填入并发送的预设问题（与说明文档「AI 助手」小节保持一致） */
+/**预设问题*/
 const PRESET_QUESTIONS = [
   {
     label: '概率含义',
     text: 'FLDCF 输出的「伪造概率」「真实概率」分别表示什么？如何判断一张卫星图是否可疑？',
   },
   {
-    label: 'mask 解读',
+    label: 'mask解读',
     text: 'mask 可视化里黑色和白色区域分别代表什么？「篡改像素占比」数值该如何理解？',
   },
   {
-    label: '权重线区别',
+    label: '权重区别',
     text: 'fakeV、fakeL、studentV、studentL 等权重线有什么区别？各自更适合什么数据或场景？',
   },
   {
@@ -72,7 +72,7 @@ async function send() {
   const text = input.value.trim()
   if (!text || sending.value) return
   if (!configured.value) {
-    ElMessage.warning('服务端未配置 DeepSeek，请在后端 .env 填写 DEEPSEEK_BASE_URL 与 DEEPSEEK_API_KEY')
+    ElMessage.warning('服务端未配置DeepSeek，请在后端.env填写DEEPSEEK_BASE_URL与DEEPSEEK_API_KEY')
     return
   }
 

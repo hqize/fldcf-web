@@ -28,7 +28,7 @@ import type { FormInstance, FormRules } from 'element-plus';
 import { ElMessage } from 'element-plus';
 
 
-// 1. 定义 Props
+// 1.定义Props
 interface UserForm {
     username: string;
     password: string;
@@ -39,27 +39,27 @@ const props = defineProps<{
     loginRules: FormRules;
 }>();
 
-// 2. 定义 emits (向父组件发送事件)
+// 2.定义emits (向父组件发送事件)
 const emit = defineEmits<{
     (e: 'login-success', payload: { access_token: string; token_type: string }): void;
 }>();
 
-// 3. 获取表单实例
+// 3.获取表单实例
 const loginForm = ref<FormInstance | null>(null);
 
-// 4. 处理登录逻辑
+// 4.处理登录逻辑
 import { userApi } from '@/api/user'; 
 const handleLogin = async () => {
     if (!loginForm.value) return;
 
     try {
-        // 1. 表单校验
+        // 1.表单校验
         await loginForm.value.validate();
 
         console.log('表单校验通过，准备发送请求...', props.loginUser);
 
-        // 2. 调用后端接口
-        // request.ts 成功时会返回后端的 data 字段
+        // 2.调用后端接口
+        // request.ts 成功时会返回后端的data字段
         const res = await userApi.login({
             username: props.loginUser.username,
             password: props.loginUser.password
@@ -67,7 +67,7 @@ const handleLogin = async () => {
 
         console.log('登录成功，后端返回数据:', res);
 
-        // 3. Token 由父组件写入 Pinia（与 localStorage 同步）
+        // 3.Token由父组件写入Pinia（与localStorage同步）
         if (res?.access_token) {
             ElMessage.success('登录成功！');
             emit('login-success', res);
@@ -77,7 +77,7 @@ const handleLogin = async () => {
         ElMessage.warning('登录成功但未获取到 access_token，请检查后端返回');
 
     } catch (error: unknown) {
-        // 5. 错误处理
+        // 5.错误处理
         // request.ts 中的拦截器已经弹出了 ElMessage 错误提示
         // 这里只需要处理逻辑上的失败
         console.error('登录请求失败:', error);

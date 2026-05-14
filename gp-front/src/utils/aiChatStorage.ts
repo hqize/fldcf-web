@@ -1,5 +1,5 @@
 /**
- * AI 助手对话本地持久化（localStorage，按用户名隔离；不上传服务器）
+ * AI助手对话本地持久化（localStorage，按用户名隔离；不上传服务器）
  */
 
 export interface AiChatTurn {
@@ -8,7 +8,7 @@ export interface AiChatTurn {
 }
 
 const PREFIX = 'fldcf-ai-chat-v1:'
-/** 防止撑爆存储：最多保留轮次（user+assistant 各算一条） */
+/** 防止撑爆存储：最多保留轮次（user+assistant各算一条） */
 const MAX_TURNS = 120
 
 export function aiChatStorageKey(username: string | undefined | null): string {
