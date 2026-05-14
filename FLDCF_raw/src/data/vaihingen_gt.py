@@ -63,13 +63,18 @@ class Vaihingen(SRData):
 
     def _set_filesystem(self, dir_data):  #guide prior的学习
         super(Vaihingen, self)._set_filesystem(dir_data)
-        self.dir_hr = os.path.join(self.apath, 'gt')
-        self.dir_lr = os.path.join(self.apath, 'train/inpainted')
-        self.dir_hr_gt = os.path.join(self.apath, 'gt')
+        self.dir_hr = os.path.join(self.apath, 'train/gt')
+        self.dir_lr = os.path.join(self.apath, 'train/lama')
+        self.dir_lrl = os.path.join(self.apath, 'train/lama')
+        self.dir_lrr = os.path.join(self.apath, 'train/repaint')
+        self.dir_hr_gt = os.path.join(self.apath, 'train/gt')
         self.dir_lr_gt = os.path.join(self.apath, 'train/gt')
-        self.dir_test_hr = os.path.join(self.apath, 'gt')
-        self.dir_test_lr = os.path.join(self.apath, 'test/inpainted')
-        self.dir_test_hr_gt = os.path.join(self.apath, 'gt')
+        self.dir_test_hr = os.path.join(self.apath, 'test/gt')
+        self.dir_test_lr = os.path.join(self.apath, 'test/lama')
+        self.dir_test_lrl = os.path.join(self.apath, 'test/lama')
+        self.dir_test_lrr = os.path.join(self.apath, 'test/repaint')
+        self.dir_test_hr_gt = os.path.join(self.apath, 'test/gt')
         self.dir_test_lr_gt = os.path.join(self.apath, 'test/gt')
+        self.dir_gt_mask = os.path.join(self.apath, 'gt_mask')
 
 

@@ -110,4 +110,4 @@ def get_Acc(data_real,data_pre):
     precision = precision_score(test_image_labels, test_p)
     recall = recall_score(test_image_labels, test_p)
     print("Image F1 score: {:.4f} Accuracy: {:.4f} Precision: {:.4f} Recall: {:.4f}". format(f1,acc,precision, recall))
-    return acc
+    return acc, f1

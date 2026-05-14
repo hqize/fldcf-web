@@ -90,11 +90,16 @@ class Lovadagt(SRData):
 
     def _set_filesystem(self, dir_data):
         super(Lovadagt, self)._set_filesystem(dir_data)
-        self.dir_hr = os.path.join(self.apath, 'train/gt_generated_place')
-        self.dir_lr = os.path.join(self.apath, 'train/lama/inpainted')
+        self.dir_hr = os.path.join(self.apath, 'train/gt')
+        self.dir_lr = os.path.join(self.apath, 'train/lama')
+        self.dir_lrl = os.path.join(self.apath, 'train/lama')
+        self.dir_lrr = os.path.join(self.apath, 'train/repaint')
         self.dir_lr_gt = os.path.join(self.apath, 'train/gt')
-        self.dir_test_hr = os.path.join(self.apath, 'test/gt_generated_place')
-        self.dir_test_lr = os.path.join(self.apath, 'test/lama/inpainted')
+        self.dir_test_hr = os.path.join(self.apath, 'test/gt')
+        self.dir_test_lr = os.path.join(self.apath, 'test/lama')
+        self.dir_test_lrl = os.path.join(self.apath, 'test/lama')
+        self.dir_test_lrr = os.path.join(self.apath, 'test/repaint')
         self.dir_test_lr_gt = os.path.join(self.apath, 'test/gt')
+        self.dir_gt_mask = os.path.join(self.apath, 'gt_mask')
 
 

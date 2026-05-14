@@ -5,7 +5,6 @@ import utility
 
 import torch
 import torch.nn.utils as utils
-import matplotlib.pyplot as plt
 import numpy as np
 import math
 
@@ -32,6 +31,48 @@ class Trainer():
             self.optimizer.load(ckp.dir, epoch=len(ckp.log))
 
         self.error_last = 1e8
+        # 每 epoch 结束后写入 experiment/<save>/plots/*.png，训练时可直接打开刷新查看
+        self.epoch_train_losses = []
+        self.epoch_val_acc = []
+        self.epoch_val_f1 = []
+        self.epoch_val_miou = []
+
+    def _save_training_plots(self):
+        import matplotlib
+
+        matplotlib.use('Agg')
+        import matplotlib.pyplot as plt
+
+        plot_dir = self.ckp.get_path('plots')
+        os.makedirs(plot_dir, exist_ok=True)
+        n_loss = len(self.epoch_train_losses)
+        if n_loss > 0:
+            ep = np.arange(1, n_loss + 1)
+            plt.figure(figsize=(8, 4))
+            plt.plot(ep, self.epoch_train_losses, 'b-o', markersize=3)
+            plt.xlabel('Epoch')
+            plt.ylabel('Mean training loss')
+            plt.grid(True, alpha=0.3)
+            plt.title('Training loss')
+            plt.tight_layout()
+            plt.savefig(os.path.join(plot_dir, 'training_loss.png'), dpi=140)
+            plt.close()
+        n_val = len(self.epoch_val_miou)
+        if n_val > 0:
+            ep = np.arange(1, n_val + 1)
+            plt.figure(figsize=(8, 5))
+            plt.plot(ep, self.epoch_val_acc, label='Image Acc', marker='s', markersize=3)
+            plt.plot(ep, self.epoch_val_f1, label='Image F1', marker='o', markersize=3)
+            plt.plot(ep, self.epoch_val_miou, label='mIoU', marker='^', markersize=3)
+            plt.xlabel('Epoch')
+            plt.ylabel('Metric')
+            plt.legend()
+            plt.grid(True, alpha=0.3)
+            plt.title('Validation metrics')
+            plt.tight_layout()
+            plt.savefig(os.path.join(plot_dir, 'training_metrics.png'), dpi=140)
+            plt.close()
+        self.ckp.write_log('[plots] {}'.format(plot_dir))
 
     def testtrain(self, is_train=True):
         best_psnr_index= 0
@@ -42,6 +83,10 @@ class Trainer():
             if(is_train):
                 self.train()
                 accuracy,F1Score, MIoU=self.test(all_accuracy[best_psnr_index])
+                self.epoch_val_acc.append(float(accuracy))
+                self.epoch_val_f1.append(float(F1Score))
+                self.epoch_val_miou.append(float(MIoU))
+                self._save_training_plots()
             else:
                 accuracy,F1Score, MIoU=self.test(all_F1Score[best_psnr_index])
                 break
@@ -70,6 +115,8 @@ class Trainer():
         self.model.train()
 
         timer_data, timer_model = utility.timer(), utility.timer()
+        loss_sum = 0.0
+        n_batches = 0
         # TEMP
         for batch, (lr, hr,real, filename,) in enumerate(self.loader_train):
             lr, hr = self.prepare(lr, hr)
@@ -83,6 +130,8 @@ class Trainer():
             loss.backward()
 
             self.optimizer.step()
+            loss_sum += float(loss.detach().item())
+            n_batches += 1
 
             timer_model.hold()
 
@@ -96,6 +145,7 @@ class Trainer():
 
             timer_data.tic()
 
+        self.epoch_train_losses.append(loss_sum / max(n_batches, 1))
         self.optimizer.schedule()
     
     def test(self,best):
@@ -130,10 +180,15 @@ class Trainer():
                 save_list = [pred]
                 if self.args.save_results: #and filename[0] in myid:
                     self.ckp.save_results(self.args.data_train, filename, save_list, self.scale)
-        if(len(data_list)!=0):
-            MIoU = get_iou(data_list, 2)
-        if(len(data_real)!=0):
-            Acc = get_Acc(data_real,data_pre)
+        miou = 0.0
+        acc = 0.0
+        f1_img = 0.0
+        if len(data_list) != 0:
+            r = get_iou(data_list, 2)
+            if r is not None:
+                miou = float(r)
+        if len(data_real) != 0:
+            acc, f1_img = get_Acc(data_real, data_pre)
 
         self.ckp.write_log('Forward: {:.2f}s\n'.format(timer_test.toc()))
         self.ckp.write_log('Saving...')
@@ -149,7 +204,7 @@ class Trainer():
         )
 
         torch.set_grad_enabled(True)
-        return 0.1,0.1, 0.1
+        return acc, f1_img, miou
     
     def testimgae(self,best):
         torch.set_grad_enabled(False)

@@ -373,9 +373,13 @@ class FLDCF(nn.Module):
         super(FLDCF, self).__init__()
 
         self.learned = 	Restoretest(args)
+        if args.data_train_dir == 'fakeL':
+            prior_name = 'model_lo.pt'
+        else:
+            prior_name = 'model_vi.pt'
         self.learned.load_state_dict(
                 torch.load(
-                    os.path.join('./model', 'model_vi.pt'),
+                    os.path.join('./model', prior_name),
                 ),
                 strict=True
             )
