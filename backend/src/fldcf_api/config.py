@@ -1,5 +1,5 @@
 """
-FLDCF 路径与 preset、环境变量解析；与具体 PyTorch 加载解耦，供 router / services / inference 共用
+FLDCF 路径与 preset、环境变量解析；与具体PyTorch加载解耦，供router/services/inference共用
 """
 from __future__ import annotations
 
@@ -40,7 +40,7 @@ def normalize_preset() -> str:
 
 
 def resolve_preset(override: str | None) -> str:
-    """请求参数 preset 优先；空则沿用 FLDCF_PRESET 环境变量。"""
+    """请求参数preset优先，空则沿用FLDCF_PRESET环境变量"""
     if override is None:
         return normalize_preset()
     s = str(override).strip()
@@ -51,7 +51,7 @@ def resolve_preset(override: str | None) -> str:
 
 @dataclass
 class InferConfig:
-    """code_root: FLDCF(raw) 根目录；weights_dir: backend/fldcf_data；preset: fakeV|fakeL|studentV|studentL。"""
+    """code_root: FLDCF(raw) 根目录；weights_dir: backend/fldcf_data；preset: fakeV|fakeL|studentV|studentL"""
 
     code_root: Path
     weights_dir: Path
@@ -66,7 +66,7 @@ def default_weights_dir() -> Path:
 
 
 def default_checkpoint(weights_dir: Path, preset: str) -> Path:
-    """解析顺序：preset 专用 env → FLDCF_CHECKPOINT → fldcf_data 下默认文件名。"""
+    """解析顺序：preset专用env → FLDCF_CHECKPOINT → fldcf_data 默认文件名"""
     env_keys = {
         "fakeV": ("FLDCF_CHECKPOINT_FAKEV",),
         "fakeL": ("FLDCF_CHECKPOINT_FAKEL", "FLDCF_CHECKPOINT_LOVE"),
@@ -95,7 +95,7 @@ def default_code_root() -> Path:
 
     优先读环境变量 FLDCF_ROOT。若未设置，勿使用空 Path：在 Windows 下会解析为 cwd，误找 backend/src。
     未设置时探测：仓库根目录 FLDCF_raw（与 backend、gp-front 同级，内仅须含官方 src/）、
-    backend/FLDCF_raw、backend/FLDCF(raw)。
+    backend/FLDCF_raw、backend/FLDCF(raw)
     """
     raw = os.environ.get("FLDCF_ROOT", "").strip()
     if raw:

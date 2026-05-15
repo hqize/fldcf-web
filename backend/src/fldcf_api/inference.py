@@ -28,7 +28,7 @@ from .fldcf_runtime import (
 
 
 def _apply_max_input_side(img: np.ndarray) -> tuple[np.ndarray, int, int, bool]:
-    """超限缩小最长边；``FLDCF_MAX_INPUT_SIDE``≤0 表示不缩放。"""
+    """超限缩小最长边；``FLDCF_MAX_INPUT_SIDE``≤0 表示不缩放"""
     oh, ow = int(img.shape[0]), int(img.shape[1])
     max_side = int(os.environ.get("FLDCF_MAX_INPUT_SIDE", "2048"))
     if max_side <= 0:
@@ -44,7 +44,7 @@ def _apply_max_input_side(img: np.ndarray) -> tuple[np.ndarray, int, int, bool]:
 
 
 def _bytes_to_rgb_ndarray(file_bytes: bytes) -> np.ndarray:
-    """上传字节 → HWC RGB uint8。"""
+    """上传字节 → HWC RGB uint8"""
     img = imageio.imread(io.BytesIO(file_bytes))
     if img.ndim == 2:
         img = np.stack([img, img, img], axis=-1)
@@ -65,7 +65,7 @@ def _postprocess_fl_outputs(
 ) -> dict[str, object]:
     """
     输出张量 → API 字段
-    ``seg_logits``: [1, C, H, W]；``cls_logits``: [1, 2] 图级 logits。
+    ``seg_logits``: [1, C, H, W]；``cls_logits``: [1, 2] 图级 logits
     """
     sm = F.softmax(cls_logits, dim=1)
     fake_prob = float(sm[0, 0].item())
@@ -211,9 +211,9 @@ class FldcfPredictor:
 
     def predict_image_bytes(self, file_bytes: bytes) -> dict:
         """
-        **输入**：``file_bytes`` = 上传图像原始字节。
+        **输入**：``file_bytes`` = 上传图像原始字节
 
-        **输出**：见模块顶「二、输出」表格（``dict`` 可直接 JSON 化字段由 router 封装）。
+        **输出**：``dict``可直接JSON化字段由router封装
         """
         self.load()
         assert self._model is not None

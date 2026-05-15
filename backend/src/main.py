@@ -1,4 +1,4 @@
-"""FastAPI 应用入口（业务包位于同级的 `auth`、`fldcf_api` 等模块下）。"""
+"""FastAPI 应用入口"""
 import os
 from contextlib import asynccontextmanager
 from pathlib import Path
@@ -19,8 +19,8 @@ from src.utils.logging_manager import get_uvicorn_log_config, setup_logging
 # -----------------------------------------------------------------------------
 # 进程初始化（须在import src.core.settings之前）
 #   1. 加载backend/.env（及可选 src/aichat_api/.env），写入os.environ
-#   2. 先用环境变量里的 LOG_LEVEL 配日志，保证随后加载 settings时JWT等日志格式一致
-#   3. 再import settings，并用settings.LOG_LEVEL同步一次（与 .env 规范化结果一致）
+#   2. 先用环境变量里的LOG_LEVEL配日志，保证随后加载 settings时JWT等日志格式一致
+#   3. 再import settings，并用settings.LOG_LEVEL同步一次（与.env规范化结果一致）
 # -----------------------------------------------------------------------------
 
 _BACKEND_ROOT = Path(__file__).resolve().parent.parent
@@ -47,7 +47,7 @@ from src.utils.exceptions import register_exception_handlers
 # ==================== 生命周期 ====================
 @asynccontextmanager
 async def lifespan(app: FastAPI):
-    """启动：数据库 / 建表 / 初始管理员；关闭：断开 Tortoise"""
+    """启动：数据 /建表/初始管理员；关闭：断开Tortoise"""
     await Tortoise.init(config=TORTOISE_ORM)
     await Tortoise.generate_schemas(safe=True)
     await init_admin_user()
@@ -58,7 +58,7 @@ async def lifespan(app: FastAPI):
 # ==================== 应用实例 ====================
 app = FastAPI(
     title="遥感图像伪造定位可视化",
-    description="主服务：用户认证 + FLDCF 推理（/fldcf）+ AI 助手（/aichat）",
+    description="主服务：用户认证+FLDCF推理+AI助手",
     lifespan=lifespan,
 )
 register_exception_handlers(app)
@@ -83,8 +83,8 @@ app.add_middleware(
 # ==================== 路由注册 ====================
 for router, prefix, tag in (
     (auth_router, "/auth", "登录认证模块"),
-    (fldcf_router, "/fldcf", "FLDCF 伪造定位"),
-    (aichat_router, "/aichat", "AI 助手"),
+    (fldcf_router, "/fldcf", "FLDCF伪造定位"),
+    (aichat_router, "/aichat", "AI助手"),
     (detection_router, "/detections", "检测历史"),
 ):
     app.include_router(router, prefix=prefix, tags=[tag])

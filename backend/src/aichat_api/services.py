@@ -1,5 +1,5 @@
 """
-DeepSeek（OpenAI 兼容接口）调用
+DeepSeek（OpenAI兼容接口）调用
 """
 
 from __future__ import annotations

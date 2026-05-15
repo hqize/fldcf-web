@@ -1,7 +1,7 @@
 """
-FLDCF 处理异常：推理链异常 → BizError（仅供 fldcf_api 使用）
+FLDCF 处理异常：推理链异常 → BizError（仅供fldcf_api使用）
 
-统一响应信封见 utils.exceptions；具体 HTTP 状态与业务含义按本模块约定转换
+统一响应信封见utils.exceptions；具体HTTP状态与业务含义按本模块约定转换
 """
 
 from __future__ import annotations
@@ -21,5 +21,5 @@ def reraise_predict_as_biz(exc: BaseException) -> None:
         raise BizError(str(exc), code="500", status_code=500) from exc
     if isinstance(exc, RuntimeError):
         raise BizError(str(exc), code="503", status_code=503) from exc
-    logger.exception("FLDCF /predict推理异常")
+    logger.exception("FLDCF/predict推理异常")
     raise BizError(str(exc), code="500", status_code=500) from exc

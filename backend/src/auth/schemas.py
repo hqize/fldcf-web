@@ -8,7 +8,7 @@ from src.core.schemas import TokenPayload  # noqa: F401 对外兼容
 # ==================== 认证相关 ====================
 
 class Token(BaseModel):
-    """登录成功后返回的 Token"""
+    """登录成功后返回的Token"""
     access_token: str
     token_type: str = "bearer"
 

@@ -8,13 +8,13 @@ from pydantic import BaseModel, Field
 
 
 class ChatMessageIn(BaseModel):
-    role: str = Field(..., description="system | user | assistant")
+    role: str = Field(..., description="system|user|assistant")
     content: str = Field(..., min_length=1, max_length=32000)
 
 
 class AiChatRequest(BaseModel):
     messages: list[ChatMessageIn] = Field(..., min_length=1, max_length=50)
-    model: str | None = Field(None, description="可选；省略则用服务器默认 DEEPSEEK_MODEL")
+    model: str | None = Field(None, description="可选；省略则用服务器默认DEEPSEEK_MODEL")
 
 
 class AiChatResponse(BaseModel):

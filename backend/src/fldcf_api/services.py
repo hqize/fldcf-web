@@ -1,5 +1,5 @@
 """
-FLDCF 业务层：预测器缓存、路径解析、与 PyTorch 推理调度
+FLDCF 业务层：预测器缓存、路径解析、与PyTorch推理调度
 """
 
 from __future__ import annotations
@@ -37,14 +37,14 @@ def env_wants_cpu() -> bool:
 
 
 def resolve_use_cpu_flag(use_cpu: bool | None) -> bool:
-    """use_cpu=None 时沿用 FLDCF_CPU 环境变量。"""
+    """use_cpu=None 时沿用 FLDCF_CPU 环境变量"""
     if use_cpu is not None:
         return use_cpu
     return env_wants_cpu()
 
 
 def parse_use_cpu_form_value(raw: str | None) -> bool | None:
-    """multipart 表单中的 use_cpu：空串或未传表示沿用默认。"""
+    """multipart表单中的 use_cpu：空串或未传表示沿用默认"""
     if raw is None:
         return None
     s = str(raw).strip().lower()
@@ -71,7 +71,7 @@ def _predictor_signature(preset: str, use_cpu_resolved: bool) -> str:
 
 
 def get_predictor(preset: str | None = None, use_cpu: bool | None = None) -> FldcfPredictor:
-    """按 preset、权重路径与 CPU/GPU 偏好签名缓存实例。"""
+    """按preset、权重路径与CPU/GPU偏好签名缓存实例"""
     preset_resolved = resolve_preset(preset)
     use_cpu_resolved = resolve_use_cpu_flag(use_cpu)
     sig = _predictor_signature(preset_resolved, use_cpu_resolved)
