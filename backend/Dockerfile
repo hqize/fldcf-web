@@ -59,7 +59,20 @@ ARG PIP_MIRROR=official
 WORKDIR /app
 COPY backend/requirements.txt /app/backend/requirements.txt
 
+# 大包（torch/numpy）下载慢时避免 300s 读超时
+ENV PIP_DEFAULT_TIMEOUT=600
+
 RUN set -eux; \
+    pip_retry() { \
+      attempt=1; \
+      while [ "$attempt" -le 6 ]; do \
+        if pip install "$@"; then return 0; fi; \
+        echo "pip failed (attempt ${attempt}/6), retry in 30s..." >&2; \
+        attempt=$((attempt + 1)); \
+        sleep 30; \
+      done; \
+      return 1; \
+    }; \
     case "$PYTORCH_VARIANT" in \
       cu118) \
         WHEEL_TAG="cu118"; \
@@ -92,16 +105,19 @@ RUN set -eux; \
       tencent) PIP_EXTRA="https://mirrors.cloud.tencent.com/pypi/simple" ;; \
       *) echo "unknown PIP_MIRROR=$PIP_MIRROR (use official|aliyun|ustc|tsinghua|tencent)" >&2; exit 1 ;; \
     esac; \
-    PIP_OPTS="--no-cache-dir --default-timeout=300 --retries 10"; \
+    PIP_OPTS="--no-cache-dir --default-timeout=600 --retries 15"; \
     if [ -n "$PIP_EXTRA" ]; then PIP_EXTRA_FLAG="--extra-index-url $PIP_EXTRA"; else PIP_EXTRA_FLAG=""; fi; \
-    pip install $PIP_OPTS $PIP_EXTRA_FLAG \
+    if [ -n "$PIP_EXTRA" ]; then \
+      pip_retry $PIP_OPTS -i "$PIP_EXTRA" "numpy==1.26.4" "sympy==1.13.1"; \
+    fi; \
+    pip_retry $PIP_OPTS $PIP_EXTRA_FLAG \
       "torch==${TORCH_VER}" "torchvision==${TV_VER}" \
       --index-url "$IDX"; \
     sed '/^torchvision/d' /app/backend/requirements.txt > /tmp/req.txt; \
     if [ -n "$PIP_EXTRA" ]; then \
-      pip install $PIP_OPTS -i "$PIP_EXTRA" --extra-index-url "$IDX" -r /tmp/req.txt; \
+      pip_retry $PIP_OPTS -i "$PIP_EXTRA" --extra-index-url "$IDX" -r /tmp/req.txt; \
     else \
-      pip install $PIP_OPTS --extra-index-url "$IDX" -r /tmp/req.txt; \
+      pip_retry $PIP_OPTS --extra-index-url "$IDX" -r /tmp/req.txt; \
     fi
 
 COPY backend /app/backend

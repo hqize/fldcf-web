@@ -1,6 +1,6 @@
 # 遥感图像伪造定位可视化
 
-本项目为前后端分离应用：**后端**基于 FastAPI，提供 JWT 登录与 **[FLDCF]([FLDCF: A Collaborative Framework for Forgery Localization and Detection in Satellite Imagery | IEEE Journals & Magazine | IEEE Xplore](https://ieeexplore.ieee.org/document/10756746))** 推理接口；**前端**基于 Vue 3 + Vite + Element Plus，流程为 **登录 → 工作台首页 → 伪造定位可视化页**。
+​	本项目为前后端分离应用：**后端**基于 FastAPI，提供 JWT 登录，深度学习算法基于 **[FLDCF]([FLDCF: A Collaborative Framework for Forgery Localization and Detection in Satellite Imagery | IEEE Journals & Magazine | IEEE Xplore](https://ieeexplore.ieee.org/document/10756746))** ，并将其转化为推理接口；**前端**基于 Vue 3 + Vite + Element Plus+Typescript，流程为 **登录 → 工作台首页 → 伪造定位可视化页**。
 
 ---
 
@@ -15,13 +15,13 @@
 | `backend/fldcf_data/` | 权重与先验（如 `model_fakeV.pt`、`model/` 下 `model_vi.pt` 等） |
 | `backend/src/utils/` | 后端通用工具（**勿与 FLDCF 源码里的 `src/utils` 混淆**，推理时已做命名空间隔离） |
 | `gp-front/` | Vue 前端，开发端口通常为 **5173** |
-| **`FLDCF_raw/`** | 与 `backend`、`gp-front` **同级**；**只需保留官方仓库里的 `src/` 目录**（拷成 `FLDCF_raw/src/...`），训练数据、`scripts/` 等不必放入 |
+| **`FLDCF_raw/`** | 与 `backend`、`gp-front` **同级**；**只需保留FLDCF仓库里的 `src/` 目录**（拷成 `FLDCF_raw/src/...`），训练数据、`scripts/` 等不必放入 |
 
 ### Git 与忽略规则
 
 `.gitignore` 忽略各层 `.env`、Python/Node 缓存与虚拟环境等。
 
-**大权重（`backend/fldcf_data` 下 `*.pt` 等）**：单文件 **超过 100MB 无法直接推送到 GitHub**（会报 `GH001` / `exceeds GitHub's file size limit`）。本仓库默认 **不把 `.pt` 等权重提交到 Git**；请从下方 **网盘** 下载后解压到 **`backend/fldcf_data/`**（与本地开发、Docker 卷挂载路径一致）。若必须用 GitHub 存权重，请安装 **[Git LFS](https://git-lfs.github.com/)** 并对 `*.pt` 执行 `git lfs track` 后再提交（仍受 LFS 配额限制）。`docs/` 为本地文档目录，默认忽略。
+**大权重（`backend/fldcf_data` 下 `*.pt` 等）**：单文件 **超过100MB无法直接推送到 GitHub**（会报 `GH001` / `exceeds GitHub's file size limit`）,本仓库默认 **不把 `.pt` 等权重提交到 Git**；请从下方**网盘**下载后解压到 **`backend/fldcf_data/`**（与本地开发、Docker 卷挂载路径一致）。
 
 ### `fldcf_data` 获取（百度网盘）
 
@@ -46,7 +46,7 @@
 
 - **MySQL**：ORM 使用 Tortoise + aiomysql，数据库连接串见下文 `DB_URL`。
 
-- **FLDCF 官方源码**：推理**只依赖**官方工程里的 **`src/`** 树。在本仓库根目录下的 **`FLDCF_raw/`** 中放置 **`src`** 即可（即从 FLDCF(raw) 只复制 **`src` 文件夹**到 `FLDCF_raw/src`）；不必拷贝仓库根的 `data/`、`scripts/` 等。此时 **`backend/.env` 可不写 `FLDCF_ROOT`**。亦可用 **`FLDCF_ROOT`** 指向其它路径，详见 `backend/.env.example`。
+- **FLDCF源码**：推理**只依赖FLDCF源码**里的 **`src/`** 树,在本仓库根目录下的 **`FLDCF_raw/`** 中放置 **`src`** 即可（即从 FLDCF(raw) 只复制 **`src` 文件夹**到 `FLDCF_raw/src`）；不必拷贝仓库根的 `data/`、`scripts/` 等,此时 **`backend/.env` 可不写 `FLDCF_ROOT`**。亦可用 **`FLDCF_ROOT`** 指向其它路径，详见 `backend/.env.example`。
 
 ---
 
@@ -86,7 +86,7 @@
 
 ---
 
-## FLDCF 权重与可选环境变量
+## FLDCF权重与可选环境变量
 
 - **获取方式**：大文件不在 GitHub 仓库内，请从 [百度网盘分享](https://pan.baidu.com/s/1JmfZFJmpbigv_ISEpT5qJg?pwd=i8ep)（提取码 **`i8ep`**）下载后解压到 **`backend/fldcf_data/`**。
 - 整网权重默认文件名如：`model_fakeV.pt`、`model_fakeL.pt`、`model_studentV.pt`、`model_studentL.pt`（可按需在 `.env` 中用 `FLDCF_CHECKPOINT_*` 覆盖路径，见 `backend/src/fldcf_api/inference.py` 顶部说明）。
@@ -145,7 +145,7 @@ Token 存于浏览器 **`localStorage`** 的 `token` 字段；路由前置守卫
 
 ## Docker 部署
 
-本项目提供两种常见上线方式，可按环境选择。预构建镜像发布在  **[Docker Hub ](https://hub.docker.com/repositories/dreamom)**下（镜像名 **`dreamom/fldcf-backend`**、**`dreamom/fldcf-frontend`**）。
+本项目提供两种常见上线方式，可按环境选择，预构建镜像发布在  **[Docker Hub ](https://hub.docker.com/repositories/dreamom)**下（镜像名 **`dreamom/fldcf-backend`**、**`dreamom/fldcf-frontend`**）。
 
 ### 方式 A： `git clone` + `docker compose build`（源码构建）
 
@@ -215,4 +215,4 @@ Token 存于浏览器 **`localStorage`** 的 `token` 字段；路由前置守卫
 
 ## 许可与引用
 
-若使用[FLDCF](https://github.com/littlebeen/Forgery-localization-for-remote-sensing) 代码与论文以及相关权重，请遵循原作者许可并在学术工作中正确引用。本 README 仅描述本仓库的集成与运行方式。
+若使用[FLDCF](https://github.com/littlebeen/Forgery-localization-for-remote-sensing) 代码与论文以及相关权重，请遵循原作者许可并在学术工作中正确引用，本项目只是对其算法工程化并在应用层实现。

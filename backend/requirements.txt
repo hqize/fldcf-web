@@ -14,7 +14,7 @@ openai>=1.58.0
 #   pip install torch torchvision --index-url https://download.pytorch.org/whl/cu118
 #   # 或 cu124：https://download.pytorch.org/whl/cu124
 # 勿单独 pip install torch（会得到 CPU 版）；安装后再 pip install -r requirements.txt 亦可。
-numpy>=1.24
+numpy>=1.24,<2.1
 imageio>=2.31
 scikit-image>=0.21
 matplotlib>=3.7
