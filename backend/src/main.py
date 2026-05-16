@@ -63,12 +63,11 @@ app = FastAPI(
 )
 register_exception_handlers(app)
 
-
 # ==================== CORS ====================
 # Docker/Nginx同域前端：设置CORS_ALLOW_ORIGINS="http://localhost,http://127.0.0.1" 等
 _cors_env = os.getenv(
     "CORS_ALLOW_ORIGINS",
-    "http://localhost:8000,http://localhost:5173,http://localhost,http://127.0.0.1",
+    "http://localhost:8000,http://localhost:5173,http://localhost,http://127.0.0.1"
 )
 _cors_origins = [x.strip() for x in _cors_env.split(",") if x.strip()]
 app.add_middleware(
@@ -79,16 +78,14 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-
 # ==================== 路由注册 ====================
 for router, prefix, tag in (
-    (auth_router, "/auth", "登录认证模块"),
-    (fldcf_router, "/fldcf", "FLDCF伪造定位"),
-    (aichat_router, "/aichat", "AI助手"),
-    (detection_router, "/detections", "检测历史"),
+        (auth_router, "/auth", "登录认证模块"),
+        (fldcf_router, "/fldcf", "FLDCF伪造定位"),
+        (aichat_router, "/aichat", "AI助手"),
+        (detection_router, "/detections", "检测历史"),
 ):
     app.include_router(router, prefix=prefix, tags=[tag])
-
 
 # ==================== 静态文件 ====================
 _static = _BACKEND_ROOT / "static"
