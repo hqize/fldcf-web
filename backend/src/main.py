@@ -33,7 +33,7 @@ if load_dotenv:
 
 setup_logging(level=os.getenv("LOG_LEVEL", "INFO"))
 
-from src.core.settings import LOG_LEVEL, TORTOISE_ORM
+from src.core.settings import IS_PRODUCTION, LOG_LEVEL, TORTOISE_ORM
 
 setup_logging(level=LOG_LEVEL)
 
@@ -56,10 +56,14 @@ async def lifespan(app: FastAPI):
 
 
 # ==================== 应用实例 ====================
+# 生产环境关闭 /docs、/redoc、/openapi.json，避免用户从 :8000 直接看到接口文档
 app = FastAPI(
     title="遥感图像伪造定位可视化",
     description="主服务：用户认证+FLDCF推理+AI助手",
     lifespan=lifespan,
+    docs_url=None if IS_PRODUCTION else "/docs",
+    redoc_url=None if IS_PRODUCTION else "/redoc",
+    openapi_url=None if IS_PRODUCTION else "/openapi.json",
 )
 register_exception_handlers(app)
 

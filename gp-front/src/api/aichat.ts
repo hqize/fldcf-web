@@ -1,5 +1,5 @@
 /**
- * AI 助手：与主站同源 baseURL（VITE_API_BASE_URL → FastAPI /aichat）
+ * AI 助手：相对 baseURL 的 /aichat/...（经网关为 /api/aichat/...）
  */
 import request from '@/utils/request'
 

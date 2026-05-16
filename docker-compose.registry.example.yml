@@ -28,7 +28,7 @@ services:
   backend:
     image: dreamom/fldcf-backend:1.0.0
     ports:
-      - "${BACKEND_PORT:-8000}:8000"
+      - "${BACKEND_BIND:-127.0.0.1}:${BACKEND_PORT:-8000}:8000"
     environment:
       ENV: ${ENV:-production}
       LOG_LEVEL: ${LOG_LEVEL:-INFO}

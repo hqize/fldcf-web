@@ -165,7 +165,7 @@ Token 存于浏览器 **`localStorage`** 的 `token` 字段；路由前置守卫
 
 - **默认 CPU**：`docker.env` 中 `PYTORCH_VARIANT` 留空或 `cpu`，`FLDCF_CPU=1`。
 
-- **GPU**：主机安装 **[NVIDIA Container Toolkit](https://docs.nvidia.com/datacenter/cloud-native/container-toolkit/install-guide.html)**，在 `docker.env` 设 **`PYTORCH_VARIANT=cu124`**、**`FLDCF_CPU=0`**，并执行：  
+- **GPU**：主机安装 **[NVIDIA Container Toolkit](https://docs.nvidia.com/datacenter/cloud-native/container-toolkit/install-guide.html)**，在 `docker.env` 设 **`PYTORCH_VARIANT=cu118`**（CUDA 11.8）或 **`cu124`**（CUDA 12.4）、**`FLDCF_CPU=0`**，并执行：  
   
   ```bash
   docker compose -f docker-compose.yml -f docker-compose.gpu.yml --env-file docker.env up -d --build

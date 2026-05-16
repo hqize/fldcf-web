@@ -1,5 +1,5 @@
 /**
- * 检测历史（主站 /detections，需登录）
+ * 检测历史（需登录）
  */
 import request from '@/utils/request'
 

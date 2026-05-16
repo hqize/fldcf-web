@@ -3,12 +3,27 @@
 #   1. 准备权重：将 .pt 与 model/ 先放到 backend/fldcf_data/（与本地开发一致）
 #   2. 复制环境：copy docker.env.example docker.env，填写 JWT_SECRET_KEY、AUTH_INIT_PASSWORD 等
 #   3. docker compose --env-file docker.env up --build
+# 1. 首次启动 / 改了代码需要重新构建
+# docker compose --env-file docker.env up --build -d
+
+# 2. 后续普通启动（用已有镜像，不重新构建）
+# docker compose --env-file docker.env up -d
+
+# # 3. 只是改了 docker.env 配置，重启生效
+# docker compose --env-file docker.env down
+# docker compose --env-file docker.env up -d
+
+# # 或者更简单，直接重启
+# docker compose restart
+
 #
-# 浏览器访问 http://localhost （前端） 后端直连 http://localhost:8000/docs
+# 浏览器访问 http://<主机IP> 或 http://localhost（前端，80 端口）
+# 后端默认只绑定 127.0.0.1:8000（仅服务器本机可访问，局域网用户打不开 :8000）
 #
 # GPU（可选）：主机安装 NVIDIA 驱动 + Container Toolkit 后，在 docker.env 设
-#   PYTORCH_VARIANT=cu124 与 FLDCF_CPU=0，再执行：
+#   PYTORCH_VARIANT=cu118 或 cu124，且 FLDCF_CPU=0，再执行：
 #   docker compose -f docker-compose.yml -f docker-compose.gpu.yml --env-file docker.env up --build
+
 
 services:
   mysql:
@@ -34,8 +49,10 @@ services:
       args:
         PYTORCH_VARIANT: ${PYTORCH_VARIANT:-cpu}
         APT_MIRROR: ${APT_MIRROR:-official}
+        PIP_MIRROR: ${PIP_MIRROR:-official}
     ports:
-      - "${BACKEND_PORT:-8000}:8000"
+      # BACKEND_BIND=0.0.0.0 才允许局域网访问 :8000（不推荐对用户开放）
+      - "${BACKEND_BIND:-127.0.0.1}:${BACKEND_PORT:-8000}:8000"
     environment:
       ENV: ${ENV:-production}
       LOG_LEVEL: ${LOG_LEVEL:-INFO}
@@ -56,7 +73,7 @@ services:
       mysql:
         condition: service_healthy
 
-  web:
+  front:
     build:
       context: .
       dockerfile: gp-front/Dockerfile
