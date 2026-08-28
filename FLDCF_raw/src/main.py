@@ -7,7 +7,7 @@ import loss
 from option import args
 from trainer import Trainer
 import glob
-from thop import profile
+#from thop import profile
 import time
 import torch.optim as optim
 

@@ -36,3 +36,193 @@ data_train_dir: fakeV
 scale: 4
 save_results: False
 
+2026-05-16-23:02:45
+
+save: api_infer
+load: 
+reset: False
+model: fldcf
+pre_train: D:\Dev\acid\backend\fldcf_data\model_fakeV.pt
+resume: 0
+cpu: False
+precision: single
+self_ensemble: False
+chop: False
+n_GPUs: 1
+save_models: True
+data_train: Vaihingen
+data_train_dir: fakeV
+scale: 4
+save_results: False
+
+2026-05-17-14:05:37
+
+save: api_infer
+load: 
+reset: False
+model: fldcf
+pre_train: D:\Dev\acid\backend\fldcf_data\model_fakeV.pt
+resume: 0
+cpu: False
+precision: single
+self_ensemble: False
+chop: False
+n_GPUs: 1
+save_models: True
+data_train: Vaihingen
+data_train_dir: fakeV
+scale: 4
+save_results: False
+
+2026-05-17-14:07:08
+
+save: api_infer
+load: 
+reset: False
+model: fldcf
+pre_train: D:\Dev\acid\backend\fldcf_data\model_fakeV.pt
+resume: 0
+cpu: True
+precision: single
+self_ensemble: False
+chop: False
+n_GPUs: 1
+save_models: True
+data_train: Vaihingen
+data_train_dir: fakeV
+scale: 4
+save_results: False
+
+2026-05-17-14:07:22
+
+save: api_infer
+load: 
+reset: False
+model: fldcf
+pre_train: D:\Dev\acid\backend\fldcf_data\model_studentL.pt
+resume: 0
+cpu: False
+precision: single
+self_ensemble: False
+chop: False
+n_GPUs: 1
+save_models: True
+data_train: Lovada
+data_train_dir: fakeL
+scale: 4
+save_results: False
+
+2026-05-29-08:39:51
+
+save: api_infer
+load: 
+reset: False
+model: fldcf
+pre_train: D:\Dev\acid\backend\fldcf_data\model_fakeV.pt
+resume: 0
+cpu: False
+precision: single
+self_ensemble: False
+chop: False
+n_GPUs: 1
+save_models: True
+data_train: Vaihingen
+data_train_dir: fakeV
+scale: 4
+save_results: False
+
+2026-05-29-08:41:45
+
+save: api_infer
+load: 
+reset: False
+model: fldcf
+pre_train: D:\Dev\acid\backend\fldcf_data\model_fakeL.pt
+resume: 0
+cpu: False
+precision: single
+self_ensemble: False
+chop: False
+n_GPUs: 1
+save_models: True
+data_train: Lovada
+data_train_dir: fakeL
+scale: 4
+save_results: False
+
+2026-05-29-08:47:24
+
+save: api_infer
+load: 
+reset: False
+model: fldcf
+pre_train: D:\Dev\acid\backend\fldcf_data\model_fakeL.pt
+resume: 0
+cpu: True
+precision: single
+self_ensemble: False
+chop: False
+n_GPUs: 1
+save_models: True
+data_train: Lovada
+data_train_dir: fakeL
+scale: 4
+save_results: False
+
+2026-08-28-22:18:07
+
+save: api_infer
+load: 
+reset: False
+model: fldcf
+pre_train: D:\Dev\fldcf-web\backend\fldcf_data\model_fakeV.pt
+resume: 0
+cpu: False
+precision: single
+self_ensemble: False
+chop: False
+n_GPUs: 1
+save_models: True
+data_train: Vaihingen
+data_train_dir: fakeV
+scale: 4
+save_results: False
+
+2026-08-28-22:19:41
+
+save: api_infer
+load: 
+reset: False
+model: fldcf
+pre_train: D:\Dev\fldcf-web\backend\fldcf_data\model_fakeL.pt
+resume: 0
+cpu: False
+precision: single
+self_ensemble: False
+chop: False
+n_GPUs: 1
+save_models: True
+data_train: Lovada
+data_train_dir: fakeL
+scale: 4
+save_results: False
+
+2026-08-28-23:13:43
+
+save: api_infer
+load: 
+reset: False
+model: fldcf
+pre_train: D:\Dev\fldcf-web\backend\fldcf_data\model_fakeV.pt
+resume: 0
+cpu: False
+precision: single
+self_ensemble: False
+chop: False
+n_GPUs: 1
+save_models: True
+data_train: Vaihingen
+data_train_dir: fakeV
+scale: 4
+save_results: False
+

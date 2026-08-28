@@ -117,6 +117,32 @@ npm run dev
 
 Token 存于浏览器 **`localStorage`** 的 `token` 字段；路由前置守卫未登录会跳转登录页。
 
+### 桌面版（Electron）
+
+桌面版只是个壳，加载前端页面（**使用方无需安装 Python/GPU/权重**）。本地使用流程：
+
+```bash
+# 1. 启动后端（backend/ 目录）
+uvicorn src.main:app --host 127.0.0.1 --port 8000
+
+# 2. 启动前端（gp-front/ 目录，vite 开发服务器 5173）
+cd gp-front
+npm run dev
+
+# 3. 另开终端，启动 Electron，窗口即连上前端
+npm run electron:preview      # 若前端/后端已启动，直接加载 APP_URL
+# 或 npm run electron:dev      # 自动帮你启动 vite + Electron（此时不要手动再起前端）
+```
+
+- 应用加载地址配置在 `gp-front/electron/main.cjs` 顶部的 `APP_URL`（默认 `http://localhost:5173/`），也可用环境变量 `APP_URL` 覆盖，无需改代码；前端/后端不在本机时，改成对应地址（如 `http://192.168.1.100/`）再打包即可。
+- `/api`、`/fldcf-api` 由前端 dev server 或服务器 nginx 网关转发，同源加载，无 CORS 问题。
+- 地址连不上时窗口内会显示友好错误提示（而非 Chromium 报错页）。
+- 打包：`npm run electron:build` → `release/` 下 GPFront Setup*.exe 与 *-portable.exe（打包后的应用同样需要先启动前后端才能连上）。
+- Electron 二进制/工具链走国内镜像（见 `gp-front/.npmrc`），境外网络可删除该文件。
+- 首次运行未签名 exe 可能触发 SmartScreen 提示。
+
+> 完整说明（新增内容 / 配置 / 打包 / 常见问题）见 [`gp-front/docs/electron-desktop.md`](gp-front/docs/electron-desktop.md)。
+
 ---
 
 ## 典型使用流程

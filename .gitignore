@@ -51,12 +51,17 @@ htmlcov/
 # -----------------------------------------------------------------------------
 gp-front/node_modules/
 gp-front/dist/
+gp-front/release/
 **/node_modules/
 npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
 pnpm-debug.log*
 *.tsbuildinfo
+
+# Electron 应用图标（build/ 整体被上面 Python 段忽略，这里反选图标文件）
+!gp-front/build/
+!gp-front/build/icon.ico
 
 # -----------------------------------------------------------------------------
 # 操作系统与编辑器
